@@ -3,6 +3,8 @@
 	define( 'SRC_DB_USER', 'root' );
 	define( 'SRC_DB_PW', '' );
 	define( 'SRC_DB_HOST', 'localhost' );
+	
 	define( 'SOAP_URL', 'http://magentomigrate.com/index.php/api/v2_soap?wsdl=1' );
-
+	define( 'SOAP_LOGIN', 'bfitzgerald' );
+	define( 'SOAP_API_KEY', 'api_key');
 ?>

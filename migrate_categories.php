@@ -1,11 +1,11 @@
 <?php
-
-include('api_functions.php');
+include( 'config.php' );
+include( 'api_functions.php' );
 
 // Get BV Data
 try {
  # MySQL with PDO_MYSQL  
- $source = new PDO("mysql:host=localhost;dbname=dhporg_1", 'root', ''); 
+ $source = new PDO("mysql:host=" . SRC_DB_HOST . ";dbname=". SRC_DB_NAME, SRC_DB_USER, SRC_DB_PW); 
  $source->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING );
  $result = $source->query('SELECT * from bvc_Category');  
  $result->setFetchMode( PDO::FETCH_OBJ );
