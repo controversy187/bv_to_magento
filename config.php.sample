@@ -1,0 +1,8 @@
+<?php
+	define( 'SRC_DB_NAME', 'dhporg_1' );
+	define( 'SRC_DB_USER', 'root' );
+	define( 'SRC_DB_PW', '' );
+	define( 'SRC_DB_HOST', 'localhost' );
+	define( 'SOAP_URL', 'http://magentomigrate.com/index.php/api/v2_soap?wsdl=1' );
+
+?>
