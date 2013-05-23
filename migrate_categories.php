@@ -101,33 +101,6 @@ if( !empty($category)){
 echo "New categories: " . $new_records . "<br>";
 echo "Skipped categories: " . $skipped_records . "<br>";
 
-// Iterate through the categories again, modifying the Magento categories to include
-// the hierarchy.
-
-$bvin_to_mag = array();
-$mag_to_bvin = array();
-
-// First, get the ID mappings
-$sql = "SELECT * FROM bv_x_magento_categories";
-$result = $mag_dbh->query($sql);
-
-while($row = $result->fetchObject()){
-  $bvin_to_mag[$row->bvin] = $row->mag_id;
-  $mag_to_bvin[$row->mag_id] = $row->bvin;
-}
-
-//Loop through our new entries and update the Categories using the Magento API
-foreach($bvin_to_mag as $bvin => $mag_id){
-  $result = $dbh->query('SELECT * from bvc_Category WHERE bvin = \'' . $bvin . '\'');
-  if($row = $result->fetchObject()){
-    if($row->ParentID != 0){
-      //$mag_parent = $bvin_to_mag[$row->ParentID];
-      $return = $client->catalogCategoryMove($session, $mag_id, $bvin_to_mag[$row->ParentID]);
-    }
-  }
-}
-
-
 $mag_dbh = null;
 $dbh = null;
 ?>
