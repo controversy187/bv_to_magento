@@ -1,9 +1,11 @@
 <?php
 
-function checkTable($table, $db_handle){
-	$tableExists = $db_handle->query("SHOW TABLES LIKE '$table'")->rowCount() > 0;
+function checkTable($table, $dbh){
+	return $dbh->query("SHOW TABLES LIKE '$table'")->rowCount() > 0;
+}
 
-	return $tableExists;
+function checkBvinExists($bvin, $table, $dbh){
+	return $dbh->query("SELECT count(*) FROM $table WHERE `bvin` = '$bvin'")->fetchColumn() > 0;
 }
 
 ?>

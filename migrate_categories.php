@@ -16,8 +16,9 @@ try {
         `id` int(11) NOT NULL AUTO_INCREMENT,
         `bvin` varchar(45) DEFAULT NULL,
         `mag_id` int(10) DEFAULT NULL,
-        PRIMARY KEY (`id`)
-      ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+        PRIMARY KEY (`id`),
+        UNIQUE KEY `bvin_UNIQUE` (`bvin`)
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8
     ');
   }
 }  
@@ -35,46 +36,75 @@ try {
 
   $result = $dbh->query('SELECT * from bvc_Category');  
   $result->setFetchMode( PDO::FETCH_OBJ );
-}  
-catch(PDOException $e) {  
+} catch(PDOException $e) {  
   echo $e->getMessage();
   exit();
 }
 
 $category = array();
-echo "<table>";
+$new_records = 0;
+$skipped_records = 0;
 // Create all the categories in a non-hiearchy. Store the IDs in the DB for later use
 // and store them in an array for use later in this code.
 while($row = $result->fetch()) {
-  /*
-  $id = $client->catalogCategoryCreate($session, 2, array(
-    'name' => iconv ( "windows-1252" , "UTF-8" , $row->Name ),
-    'is_active' => 1,
-    'available_sort_by' => array('position'),
-    'custom_design' => null,
-    'custom_apply_to_products' => null,
-    'custom_design_from' => null,
-    'custom_design_to' => null,
-    'custom_layout_update' => null,
-    'default_sort_by' => 'position',
-    'description' => iconv ( "windows-1252" , "UTF-8" , $row->Description ),
-    'display_mode' => null,
-    'is_anchor' => 0,
-    'landing_page' => null,
-    'include_in_menu' => 1,
-  ));
-  */
-  echo "<tr><td>" . $id . "</td><td>" . $row->Name . "</td><td>" . iconv ( "windows-1252" , "UTF-8" , $row->Name ) . "</td><td>" . $row->Description . "</td><td>" . iconv ( "windows-1252" , "UTF-8" , $row->Description ) . "</td></tr>";
-  
-  //echo "<pre>";var_dump($id);echo("</pre>");
+
+  // Check if we already imported this Bvin
+  if(!checkBvinExists($row->bvin, 'bv_x_magento_categories', $mag_dbh)){
+
+    // Create the Category
+    $id = $client->catalogCategoryCreate($session, 2, array(
+      'name' => iconv ( "windows-1252" , "UTF-8" , $row->Name ),
+      'is_active' => 1,
+      'available_sort_by' => array('position'),
+      'custom_design' => null,
+      'custom_apply_to_products' => null,
+      'custom_design_from' => null,
+      'custom_design_to' => null,
+      'custom_layout_update' => null,
+      'default_sort_by' => 'position',
+      'description' => iconv ( "windows-1252" , "UTF-8" , $row->Description ),
+      'display_mode' => null,
+      'is_anchor' => 0,
+      'landing_page' => null,
+      'include_in_menu' => 1,
+    ));
+
+    // Add record to Array
+    $category[] = array(
+      'bvin' => $row->bvin,
+      'mag_id' => $id
+    );
+
+    $new_records++;
+  } else {
+    $skipped_records++;
+  }
 }
 
-echo "</table>";
+// Insert the new records into the DB.
+if( !empty($category)){
+  $sql = "INSERT INTO bv_x_magento_categories (`bvin`, `mag_id`) VALUES ";
+  foreach($category as $ids){
+    $sql .= " ( '" . $ids['bvin'] . "', " . $ids['mag_id'] . " ),";
+  }
+  $sql = substr($sql, 0, -1) . ";";  
+
+  try{
+    $mag_dbh->query($sql);
+  } catch(PDOException $e) {  
+    echo $e->getMessage();
+    exit();
+  }
+}
+
+echo "New categories: " . $new_records . "<br>";
+echo "Skipped categories: " . $skipped_records . "<br>";
+
 
 // Iterate through the categories again, modifying the Magento categories to include
 // the hierarchy.
 
 
-
-$source = null;
+$mag_dbh = null;
+$dbh = null;
 ?>
