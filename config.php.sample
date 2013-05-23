@@ -1,9 +1,17 @@
 <?php
+	// Source BV DB
 	define( 'SRC_DB_NAME', 'dhporg_1' );
 	define( 'SRC_DB_USER', 'root' );
 	define( 'SRC_DB_PW', '' );
 	define( 'SRC_DB_HOST', 'localhost' );
+
+	// Target Magento DB
+	define( 'MAG_DB_NAME', 'magentomigrate' );
+	define( 'MAG_DB_USER', 'root' );
+	define( 'MAG_DB_PW', '' );
+	define( 'MAG_DB_HOST', 'localhost' );
 	
+	// Target Magento SOAP information
 	define( 'SOAP_URL', 'http://magentomigrate.com/index.php/api/v2_soap?wsdl=1' );
 	define( 'SOAP_LOGIN', 'bfitzgerald' );
 	define( 'SOAP_API_KEY', 'api_key');
