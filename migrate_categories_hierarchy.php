@@ -97,7 +97,7 @@ function moveCategory(bvin_id, mag_id, iteration, max){
     dataType: "html"
   }).done(function(msg, status) {
     $('#responseBlock1').append(msg);
-    if(iteration <= max){
+    if(iteration+1 < max){
       moveCategory(bvins[iteration+1], mag_ids[iteration+1], iteration+1, max);
     }
   });
