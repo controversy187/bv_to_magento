@@ -73,16 +73,16 @@ function addCategory(bvin_id, iteration, max){
   $('#responseBlock1').append('<br>' + humanNumber + ': ' + bvin_id + "... ");
 
   $.ajax({
-      url: "add_category.php",
-      type: "POST",
-      data: {bvin : bvin_id},
-      dataType: "html"
-    }).done(function(msg, status) {
-      $('#responseBlock1').append(status + " - " + msg );
-      if(iteration <= max){
-        addCategory(bvins[iteration+1], iteration+1, max);
-      }
-    });
+    url: "add_category.php",
+    type: "POST",
+    data: {bvin : bvin_id},
+    dataType: "html"
+  }).done(function(msg, status) {
+    $('#responseBlock1').append(status + " - " + msg );
+    if(iteration <= max){
+      addCategory(bvins[iteration+1], iteration+1, max);
+    }
+  });
 }
 </script>
 <body>

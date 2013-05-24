@@ -49,24 +49,61 @@ $mag_to_bvin = array();
 // First, get the ID mappings
 $sql = "SELECT * FROM bv_x_magento_categories";
 $result = $mag_dbh->query($sql);
+?>
+<html>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js" ></script>
+<script>
+var bvins = new Array();
+var mag_ids = new Array();
+<?php
 
 while($row = $result->fetchObject()){
-  $bvin_to_mag[$row->bvin] = $row->mag_id;
-  $mag_to_bvin[$row->mag_id] = $row->bvin;
+  echo "bvins.push('" . $row->bvin . "');\n";
+  echo "mag_ids.push('" . $row->mag_id . "');\n";
 }
 
+/*
 //Loop through our new entries and update the Categories using the Magento API
 foreach($bvin_to_mag as $bvin => $mag_id){
   $result = $dbh->query('SELECT * from bvc_Category WHERE bvin = \'' . $bvin . '\'');
   if($row = $result->fetchObject()){
     if($row->ParentID != 0){
-      //$mag_parent = $bvin_to_mag[$row->ParentID];
       $return = $client->catalogCategoryMove($session, $mag_id, $bvin_to_mag[$row->ParentID]);
     }
   }
 }
-
+*/
 
 $mag_dbh = null;
 $dbh = null;
 ?>
+$(document).ready(function(){
+  totalBvins = bvins.length;
+  $('#responseBlock1').append('Moving ' + totalBvins + ' categories<br>');
+  moveCategory(bvins[0], mag_ids[0], 0, totalBvins);
+});
+
+function moveCategory(bvin_id, mag_id, iteration, max){
+  humanNumber = iteration+1;
+  $('#responseBlock1').append('<br>' + humanNumber + ' / ' + max + ' : ' + mag_id + "... ");
+
+  $.ajax({
+    url: "move_category.php",
+    type: "POST",
+    data: {
+      bvin : bvin_id,
+      mag_id: mag_id
+    },
+    dataType: "html"
+  }).done(function(msg, status) {
+    $('#responseBlock1').append(msg);
+    if(iteration <= max){
+      moveCategory(bvins[iteration+1], mag_ids[iteration+1], iteration+1, max);
+    }
+  });
+}
+</script>
+<body>
+<div id="responseBlock1"></div>
+</body>
+</html>
