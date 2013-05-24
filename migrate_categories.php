@@ -68,22 +68,25 @@ $(document).ready(function(){
   totalBvins = bvins.length;
   $('#responseBlock1').append('Adding ' + totalBvins + ' bvins<br>');
 
-  //for (i=0;i<bvins.length;i++){
-  for (i=0;i<5;i++){
-    currentNumber = i + 1;
-    $('#responseBlock1').append('<br>' + currentNumber + '/' + totalBvins + ': ' + bvins[i] + "... ");
+  addCategory(bvins[0], 0, 5);
+});
 
-    $.ajax({
+function addCategory(bvin_id, iteration, max){
+  humanNumber = iteration+1;
+  $('#responseBlock1').append('<br>' + humanNumber + ': ' + bvin_id + "... ");
+
+  $.ajax({
       url: "add_category.php",
       type: "POST",
-      data: {bvin : bvins[i]},
-      dataType: "html",
-      async: false
+      data: {bvin : bvin_id},
+      dataType: "html"
     }).done(function(msg, status) {
       $('#responseBlock1').append(status + " - " + msg );
+      if(iteration < max){
+        addCategory(bvins[iteration+1], iteration+1, max);
+      }
     });
-  }
-});
+}
 </script>
 <body>
 <div id="responseBlock1"></div>
