@@ -79,7 +79,7 @@ function addCategory(bvin_id, iteration, max){
       dataType: "html"
     }).done(function(msg, status) {
       $('#responseBlock1').append(status + " - " + msg );
-      if(iteration < max){
+      if(iteration <= max){
         addCategory(bvins[iteration+1], iteration+1, max);
       }
     });
