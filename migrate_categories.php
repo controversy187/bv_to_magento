@@ -44,63 +44,48 @@ $category = array();
 $bv_category = array();
 $new_records = 0;
 $skipped_records = 0;
+
+?>
+<html>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js" ></script>
+<script>
+var bvins = new Array();
+
+<?php
 // Create all the categories in a non-hiearchy. Store the IDs in the DB for later use
 // and store them in an array for use later in this code.
+
 while($row = $result->fetchObject()) {
-  $bv_category[$row->bvin] = $row;
-  // Check if we already imported this Bvin
-  if(!checkBvinExists($row->bvin, 'bv_x_magento_categories', $mag_dbh)){
+  echo "bvins.push('" . $row->bvin . "');\n";
 
-    // Create the Category
-    $id = $client->catalogCategoryCreate($session, 2, array(
-      'name' => iconv ( "windows-1252" , "UTF-8" , $row->Name ),
-      'is_active' => 1,
-      'available_sort_by' => array('position'),
-      'custom_design' => null,
-      'custom_apply_to_products' => null,
-      'custom_design_from' => null,
-      'custom_design_to' => null,
-      'custom_layout_update' => null,
-      'default_sort_by' => 'position',
-      'description' => iconv ( "windows-1252" , "UTF-8" , $row->Description ),
-      'display_mode' => null,
-      'is_anchor' => 0,
-      'landing_page' => null,
-      'include_in_menu' => 1,
-    ));
-
-    // Add record to Array
-    $category[] = array(
-      'bvin' => $row->bvin,
-      'mag_id' => $id,
-      'name' => $row->Name
-    );
-
-    $new_records++;
-  } else {
-    $skipped_records++;
-  }
 }
-
-// Insert the new records into the DB.
-if( !empty($category)){
-  $sql = "INSERT INTO bv_x_magento_categories (`bvin`, `mag_id`) VALUES ";
-  foreach($category as $ids){
-    $sql .= " ( '" . $ids['bvin'] . "', " . $ids['mag_id'] . " ),";
-  }
-  $sql = substr($sql, 0, -1) . ";";  
-
-  try{
-    $mag_dbh->query($sql);
-  } catch(PDOException $e) {  
-    echo $e->getMessage();
-    exit();
-  }
-}
-
-echo "New categories: " . $new_records . "<br>";
-echo "Skipped categories: " . $skipped_records . "<br>";
 
 $mag_dbh = null;
 $dbh = null;
 ?>
+$(document).ready(function(){
+
+  totalBvins = bvins.length;
+  $('#responseBlock1').append('Adding ' + totalBvins + ' bvins<br>');
+
+  for (i=0;i<bvins.length;i++){
+    currentNumber = i + 1;
+    $('#responseBlock1').append(currentNumber + '/' + totalBvins + ': ' + bvins[i] + "... ");
+
+    $.ajax({
+      url: "add_category.php",
+      type: "POST",
+      data: {bvin : bvins[i]},
+      dataType: "html",
+      async: false
+    }).done(function(msg) {
+      $('#responseBlock1').append( msg + '<br>' );
+    });
+  }
+});
+</script>
+<body>
+<div id="responseBlock1"></div>
+
+</body>
+</html>
