@@ -68,9 +68,10 @@ $(document).ready(function(){
   totalBvins = bvins.length;
   $('#responseBlock1').append('Adding ' + totalBvins + ' bvins<br>');
 
-  for (i=0;i<bvins.length;i++){
+  //for (i=0;i<bvins.length;i++){
+  for (i=0;i<5;i++){
     currentNumber = i + 1;
-    $('#responseBlock1').append(currentNumber + '/' + totalBvins + ': ' + bvins[i] + "... ");
+    $('#responseBlock1').append('<br>' + currentNumber + '/' + totalBvins + ': ' + bvins[i] + "... ");
 
     $.ajax({
       url: "add_category.php",
@@ -78,8 +79,8 @@ $(document).ready(function(){
       data: {bvin : bvins[i]},
       dataType: "html",
       async: false
-    }).done(function(msg) {
-      $('#responseBlock1').append( msg + '<br>' );
+    }).done(function(msg, status) {
+      $('#responseBlock1').append(status + " - " + msg );
     });
   }
 });

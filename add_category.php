@@ -1,5 +1,36 @@
 <?php
-var_dump($_POST);
+include( 'config.php' );
+include( 'api_functions.php' );
+include( 'custom_functions.php' );
+
+$bvin = $_POST['bvin'];
+
+// Establish connection to Magento DB
+try {
+  # MySQL with PDO_MYSQL  
+  $mag_dbh = new PDO("mysql:host=" . MAG_DB_HOST . ";dbname=". MAG_DB_NAME, MAG_DB_USER, MAG_DB_PW); 
+  $mag_dbh->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING );
+}  
+catch(PDOException $e) {  
+  echo $e->getMessage();
+  exit();
+}
+
+
+// Get BV Data
+try {
+  # MySQL with PDO_MYSQL  
+  $dbh = new PDO("mysql:host=" . SRC_DB_HOST . ";dbname=". SRC_DB_NAME, SRC_DB_USER, SRC_DB_PW); 
+  $dbh->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING );
+
+  $select_category = $dbh->prepare( "SELECT * FROM bvc_Category WHERE bvin = :bvin_id" );
+  $data = array('bvin_id' => $bvin);
+  $result = $select_category->execute($data);
+} catch(PDOException $e) {  
+  echo $e->getMessage();
+  exit();
+}
+
 /*
  $bv_category[$row->bvin] = $row;
   // Check if we already imported this Bvin
@@ -55,4 +86,7 @@ if( !empty($category)){
 echo "New categories: " . $new_records . "<br>";
 echo "Skipped categories: " . $skipped_records . "<br>";
 */
-?>
+
+$mag_dbh = null;
+$dbh = null;
+?>done
