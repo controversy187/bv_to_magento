@@ -23,16 +23,17 @@ try {
   $dbh = new PDO("mysql:host=" . SRC_DB_HOST . ";dbname=". SRC_DB_NAME, SRC_DB_USER, SRC_DB_PW); 
   $dbh->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING );
 
-  $select_category = $dbh->prepare( "SELECT * FROM bvc_Category WHERE bvin = :bvin_id" );
-  $data = array('bvin_id' => $bvin);
-  $result = $select_category->execute($data);
+  $select_category = $dbh->prepare( "SELECT * FROM bvc_Category WHERE `bvin` = :bvin_id" );
+  $select_category->bindParam(':bvin_id', $bvin);
+  $select_category->execute();
 } catch(PDOException $e) {  
   echo $e->getMessage();
   exit();
 }
 
-/*
- $bv_category[$row->bvin] = $row;
+if($row = $select_category->fetchObject()){
+  $bv_category[$row->bvin] = $row;
+  
   // Check if we already imported this Bvin
   if(!checkBvinExists($row->bvin, 'bv_x_magento_categories', $mag_dbh)){
 
@@ -54,39 +55,22 @@ try {
       'include_in_menu' => 1,
     ));
 
-    // Add record to Array
-    $category[] = array(
-      'bvin' => $row->bvin,
-      'mag_id' => $id,
-      'name' => $row->Name
-    );
-
-    $new_records++;
+    $sql = "INSERT INTO bv_x_magento_categories (`bvin`, `mag_id`) VALUES ( '" . $row->bvin . "', " . $id ." );";
+    try{
+      $mag_dbh->query($sql);
+    } catch(PDOException $e) {  
+      echo $e->getMessage();
+      exit();
+    }
+    echo "Magento Category ID: " . $id;
   } else {
-    $skipped_records++;
+    echo "Record already added";
   }
+} else {
+  echo "Error: bvin $bvin not found";
 }
 
-// Insert the new records into the DB.
-if( !empty($category)){
-  $sql = "INSERT INTO bv_x_magento_categories (`bvin`, `mag_id`) VALUES ";
-  foreach($category as $ids){
-    $sql .= " ( '" . $ids['bvin'] . "', " . $ids['mag_id'] . " ),";
-  }
-  $sql = substr($sql, 0, -1) . ";";  
-
-  try{
-    $mag_dbh->query($sql);
-  } catch(PDOException $e) {  
-    echo $e->getMessage();
-    exit();
-  }
-}
-
-echo "New categories: " . $new_records . "<br>";
-echo "Skipped categories: " . $skipped_records . "<br>";
-*/
 
 $mag_dbh = null;
 $dbh = null;
-?>done
+?>

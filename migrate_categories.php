@@ -55,10 +55,7 @@ var bvins = new Array();
 // Create all the categories in a non-hiearchy. Store the IDs in the DB for later use
 // and store them in an array for use later in this code.
 
-while($row = $result->fetchObject()) {
-  echo "bvins.push('" . $row->bvin . "');\n";
-
-}
+while($row = $result->fetchObject()) echo "bvins.push('" . $row->bvin . "');\n";
 
 $mag_dbh = null;
 $dbh = null;
@@ -68,7 +65,7 @@ $(document).ready(function(){
   totalBvins = bvins.length;
   $('#responseBlock1').append('Adding ' + totalBvins + ' bvins<br>');
 
-  addCategory(bvins[0], 0, 5);
+  addCategory(bvins[0], 0, totalBvins);
 });
 
 function addCategory(bvin_id, iteration, max){
