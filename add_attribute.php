@@ -68,7 +68,7 @@ if($row = $select_property->fetchObject()){
       $PropertyName = 'a' . $PropertyName;
     }
     $PropertyName = strtolower($PropertyName);
-    $PropertyName = substr ( $PropertyName, 0, 29 ) // Make sure it is under 30 characters in length
+    $PropertyName = substr ( $PropertyName, 0, 29 ); // Make sure it is under 30 characters in length
    
     $data = array(
       "attribute_code" => $PropertyName,
