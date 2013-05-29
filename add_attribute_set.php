@@ -48,7 +48,7 @@ if($row = $select_property->fetchObject()){
       echo $e->getMessage();
       exit();
     }
-    echo "Magento Category ID: " . $id;
+    echo "Magento Attribute Set ID: " . $id;
 
   } else {
     echo "Record already added";
