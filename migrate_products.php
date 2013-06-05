@@ -60,12 +60,13 @@ $(document).ready(function(){
   totalBvins = bvins.length;
   $('#responseBlock1').append('Adding ' + totalBvins + ' bvins<br>');
 
+  totalBvins = 5; // Delete this when going live. Only limit to 5 bvins for development
   addProduct(bvins[0], 0, totalBvins);
 });
 
 function addProduct(bvin_id, iteration, max){
   humanNumber = iteration+1;
-  $('#responseBlock1').append('<br>' + humanNumber + ': ' + bvin_id + "... ");
+  $('#responseBlock1').append('<br>' + humanNumber + ' / ' + max + ' : ' + bvin_id + '... ');
 
   $.ajax({
     url: "add_product.php",
