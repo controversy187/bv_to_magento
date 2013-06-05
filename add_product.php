@@ -36,9 +36,31 @@ if($row = $select_category->fetchObject()){
   
   // Check if we already imported this Bvin
   if(!checkBvinExists($row->bvin, 'bv_x_magento_products', $mag_dbh)){
-    echo "<pre>";var_dump($row);die("</pre>");
-    // Create the Product
-      //$id = $client-> MAGENTO API CALL
+    //echo "<pre>";var_dump($row);die("</pre>");
+    
+    // Get magento set ID from BV ProductTypeID
+    $attribute_set_id = bvinToMag('bv_x_magento_attribute_sets', $row->ProductTypeId, $mag_dbh);
+
+    
+    $id = $client->catalogProductCreate($session, 'simple', $attributeSet->set_id, 'product_sku', array(
+        'categories' => array(2),
+        'websites' => array(1),
+        'name' => 'Product name',
+        'description' => 'Product description',
+        'short_description' => 'Product short description',
+        'weight' => '10',
+        'status' => '1',
+        'url_key' => 'product-url-key',
+        'url_path' => 'product-url-path',
+        'visibility' => '4',
+        'price' => '100',
+        'tax_class_id' => 1,
+        'meta_title' => 'Product meta title',
+        'meta_keyword' => 'Product meta keyword',
+        'meta_description' => 'Product meta description'
+    ));
+
+    var_dump ($id);
 
     $sql = "INSERT INTO bv_x_magento_categories (`bvin`, `mag_id`) VALUES ( '" . $row->bvin . "', " . $id ." );";
     try{

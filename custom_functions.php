@@ -15,7 +15,7 @@ function checkBvinExists($bvin, $table, $dbh){
  * @param  PDO $dbh   The PDO Database connection
  * @return Int        The Magento ID
  */
-function bvin_to_mag($table, $bvin, $dbh){
+function bvinToMag($table, $bvin, $dbh){
 	try {
 	  # MySQL with PDO_MYSQL  
 	  $magento_id = $dbh->prepare( "SELECT * FROM `" . mysql_real_escape_string($table) . "` WHERE `bvin` = :bvin_id" );
@@ -30,7 +30,6 @@ function bvin_to_mag($table, $bvin, $dbh){
     return $response->mag_id;
   } else {
   	return false;
-  }
-	
+  }	
 }
 ?>

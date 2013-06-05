@@ -18,8 +18,8 @@ catch(PDOException $e) {
 }
 
 
-$attribute_id = bvin_to_mag('bv_x_magento_attributes', $bvin, $mag_dbh);
-$set_id = bvin_to_mag('bv_x_magento_attribute_sets', $set_bvin, $mag_dbh);
+$attribute_id = bvinToMag('bv_x_magento_attributes', $bvin, $mag_dbh);
+$set_id = bvinToMag('bv_x_magento_attribute_sets', $set_bvin, $mag_dbh);
 
 $return = $client->catalogProductAttributeSetAttributeAdd(
     $session,
