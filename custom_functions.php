@@ -32,4 +32,22 @@ function bvinToMag($table, $bvin, $dbh){
   	return false;
   }	
 }
+
+function getBVCategoryFromProductBvin($product_bvin, $dbh){
+	try {
+	  # MySQL with PDO_MYSQL  
+	  $bv_cat = $dbh->prepare( "SELECT CategoryId FROM `bvc_ProductXCategory` WHERE `ProductId` = :bvin_id" );
+	  $bv_cat->bindParam(':bvin_id', $product_bvin);
+	  $bv_cat->execute();
+	} catch(PDOException $e) {  
+	  echo $e->getMessage();
+	  exit();
+	}
+
+	if($response = $bv_cat->fetchObject()){
+    return $response->CategoryId;
+  } else {
+  	return false;
+  }
+}
 ?>

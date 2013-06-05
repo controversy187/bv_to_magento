@@ -40,32 +40,30 @@ if($row = $select_category->fetchObject()){
     
     // Get magento set ID from BV ProductTypeID
     $attribute_set_id = bvinToMag('bv_x_magento_attribute_sets', $row->ProductTypeId, $mag_dbh);
-
+    $category_bvin = getBVCategoryFromProductBvin($row->bvin, $dbh);
+    $category_id = bvinToMag('bv_x_magento_categories', $category_bvin, $mag_dbh);
     
-    $id = $client->catalogProductCreate($session, 'simple', $attributeSet->set_id, 'product_sku', array(
-        'categories' => array(2),
+    $id = $client->catalogProductCreate($session, 'simple', $attribute_set_id, $row->SKU, array(
+        'categories' => array($category_id),
         'websites' => array(1),
-        'name' => 'Product name',
-        'description' => 'Product description',
-        'short_description' => 'Product short description',
-        'weight' => '10',
+        'name' => iconv ( "windows-1252" , "UTF-8" , $row->ProductName ),
+        'description' => iconv ( "windows-1252" , "UTF-8" , $row->LongDescription ),
+        'short_description' => iconv ( "windows-1252" , "UTF-8" , $row->ShortDescription ),
+        'weight' => $row->ShippingWeight,
         'status' => '1',
-        'url_key' => 'product-url-key',
-        'url_path' => 'product-url-path',
-        'visibility' => '4',
-        'price' => '100',
-        'tax_class_id' => 1,
-        'meta_title' => 'Product meta title',
-        'meta_keyword' => 'Product meta keyword',
-        'meta_description' => 'Product meta description'
+        //'url_key' => 'product-url-key',
+        //'url_path' => 'product-url-path',
+        //'visibility' => '4',
+        'price' => $row->SitePrice,
+        //'tax_class_id' => 1,
+        'meta_title' => iconv ( "windows-1252" , "UTF-8" , $row->MetaTitle ),
+        'meta_keyword' => iconv ( "windows-1252" , "UTF-8" , $row->MetaKeywords ),
+        'meta_description' => iconv ( "windows-1252" , "UTF-8" , $row->MetaDescription )
     ));
 
-    var_dump ($id);
-
-    $sql = "INSERT INTO bv_x_magento_categories (`bvin`, `mag_id`) VALUES ( '" . $row->bvin . "', " . $id ." );";
+    $sql = "INSERT INTO bv_x_magento_products (`bvin`, `mag_id`) VALUES ( '" . $row->bvin . "', " . $id ." );";
     try{
-      //Uncomment when doing a live insert
-      //$mag_dbh->query($sql);
+      $mag_dbh->query($sql);
     } catch(PDOException $e) {  
       echo $e->getMessage();
       exit();
