@@ -33,7 +33,7 @@ try {
   $dbh = new PDO("mysql:host=" . SRC_DB_HOST . ";dbname=". SRC_DB_NAME, SRC_DB_USER, SRC_DB_PW); 
   $dbh->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING );
 
-  $result = $dbh->query('SELECT * from bvc_ProductChoices');
+  $result = $dbh->query('SELECT * from bvc_ProductXChoice');
 } catch(PDOException $e) {  
   echo $e->getMessage();
   exit();
