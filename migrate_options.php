@@ -3,6 +3,15 @@ include( 'config.php' );
 include( 'api_functions.php' );
 include( 'custom_functions.php' );
 
+//*
+//This section is a little strange, based on how Magento handles option creation.
+//BV creates a single Choice, then maps it to many products. Magento creates a
+//Single option mapped to a single Product. So a BV Choice needs to be replicated
+//onto many Magento Products as Options.
+//The overview is to iterate through the BV table bvc_ProductXChoice, which maps
+//products to Choices. With the Product and the Choice, we can create an Option in
+//Magento using our mapped Product ID (created in a previous step).
+
 // Establish connection to Magento DB
 try {
   # MySQL with PDO_MYSQL  
@@ -10,14 +19,15 @@ try {
   $mag_dbh->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING );
 
   //Check if the table exists, create it if it doesn't
-  if(!checkTable('bv_x_magento_options', $mag_dbh)){
+  if(!checkTable('bv_x_magento_products_options', $mag_dbh)){
     $result = $mag_dbh->query('
-      CREATE TABLE `bv_x_magento_options` (
+      CREATE TABLE `bv_x_magento_products_options` (
         `id` int(11) NOT NULL AUTO_INCREMENT,
-        `bvin` varchar(45) DEFAULT NULL,
-        `mag_id` int(10) DEFAULT NULL,
-        PRIMARY KEY (`id`),
-        UNIQUE KEY `bvin_UNIQUE` (`bvin`)
+        `product_bvin` varchar(45) DEFAULT NULL,
+        `choice_bvin` varchar(45) DEFAULT NULL,
+        `product_mag_id` int(10) DEFAULT NULL,
+        `option_mag_id` int(10) DEFAULT NULL,
+        PRIMARY KEY (`id`)
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8
     ');
   }
@@ -44,38 +54,45 @@ try {
 <html>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js" ></script>
 <script>
-var bvins = new Array();
+var product_bvins = new Array();
+var choice_bvins = new Array();
 
 <?php
 // Create all the categories in a non-hiearchy. Store the IDs in the DB for later use
 // and store them in an array for use later in this code.
 
-while($row = $result->fetchObject()) echo "bvins.push('" . $row->bvin . "');\n";
+while($row = $result->fetchObject()){
+  echo "product_bvins.push('" . $row->ProductId . "');\n";
+  echo "choice_bvins.push('"  . $row->ChoiceId  . "');\n";
+}
 
 $mag_dbh = null;
 $dbh = null;
 ?>
 $(document).ready(function(){
 
-  totalBvins = bvins.length;
-  $('#responseBlock1').append('Adding ' + totalBvins + ' Product Attributes<br>');
+  totalBvins = product_bvins.length;
+  $('#responseBlock1').append('Adding ' + totalBvins + ' Product Options<br>');
 
-  addOption(bvins[0], 0, totalBvins);
+  addOption(product_bvins[0], choice_bvins[0], 0, totalBvins);
 });
 
-function addOption(bvin_id, iteration, max){
+function addOption(product_bvin_id, choice_bvin_id, iteration, max){
   humanNumber = iteration+1;
-  $('#responseBlock1').append('<br>' + humanNumber + ' / ' + max + ' : ' + bvin_id + '... ');
+  $('#responseBlock1').append('<br>' + humanNumber + ' / ' + max + ' : ' + product_bvin_id + '... ');
 
   $.ajax({
     url: "add_option.php",
     type: "POST",
-    data: {bvin : bvin_id},
+    data: {
+      product_bvin_id : product_bvin_id,
+      choice_bvin_id  : choice_bvin_id
+    },
     dataType: "html"
   }).done(function(msg, status) {
     $('#responseBlock1').append(status + " - " + msg );
     if(iteration+1 < max){
-      addOption(bvins[iteration+1], iteration+1, max);
+      addOption(product_bvins[iteration+1], choice_bvins[iteration+1], iteration+1, max);
     }
   });
 }
