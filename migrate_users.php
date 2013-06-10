@@ -60,7 +60,7 @@ $(document).ready(function(){
   totalBvins = bvins.length;
   $('#responseBlock1').append('Adding ' + totalBvins + ' bvins<br>');
 
-  totalBvins = 10; // Delete this when going live. Only limit to 10 bvins for development
+  //totalBvins = 10; // Delete this when going live. Only limit to 10 bvins for development
   addUser(bvins[0], 0, totalBvins);
 });
 
