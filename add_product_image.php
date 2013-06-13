@@ -23,36 +23,80 @@ try {
   $dbh = new PDO("mysql:host=" . SRC_DB_HOST . ";dbname=". SRC_DB_NAME, SRC_DB_USER, SRC_DB_PW); 
   $dbh->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING );
 
-  $select_category = $dbh->prepare( "SELECT * FROM bvc_Product WHERE `bvin` = :bvin_id" );
-  $select_category->bindParam(':bvin_id', $bvin);
-  $select_category->execute();
+  $select_sitename = $dbh->prepare( "SELECT SettingValue FROM bvc_WebAppSetting WHERE `SettingName` = 'SiteStandardRoot'" );
+  $select_sitename->execute();
+  if($row = $select_sitename->fetchObject()){
+    $siteRoot = $row->SettingValue;
+  }
 } catch(PDOException $e) {  
   echo $e->getMessage();
   exit();
 }
 
-if($row = $select_category->fetchObject()){
-  $bv_category[$row->bvin] = $row;
-  
-  // Check if we already imported this Bvin
-  if(!checkBvinExists($row->bvin, 'bv_x_magento_products', $mag_dbh)){
-    //echo "<pre>";var_dump($row);die("</pre>");
-    
-    // Get magento set ID from BV ProductTypeID
-    $attribute_set_id = bvinToMag('bv_x_magento_attribute_sets', $row->ProductTypeId, $mag_dbh);
-    $category_bvin = getBVCategoryFromProductBvin($row->bvin, $dbh);
-    $category_id = bvinToMag('bv_x_magento_categories', $category_bvin, $mag_dbh);
-    
-    //API call
+try {
+  # MySQL with PDO_MYSQL  
+  $select_product = $dbh->prepare( "SELECT * FROM bvc_Product WHERE `bvin` = :bvin_id" );
+  $select_product->bindParam(':bvin_id', $bvin);
+  $select_product->execute();
+} catch(PDOException $e) {  
+  echo $e->getMessage();
+  exit();
+}
 
-    $sql = "INSERT INTO bv_x_magento_products (`bvin`, `mag_id`) VALUES ( '" . $row->bvin . "', " . $id ." );";
+if($row = $select_product->fetchObject()){
+  // Check if we already imported this Bvin
+  if(!checkBvinExists($row->bvin, 'bv_x_magento_product_images', $mag_dbh)){
+    $product_id = bvinToMag('bv_x_magento_products', $row->bvin, $mag_dbh);
+    $imageURL = $siteRoot . ($row->ImageFileMedium == '' ? $row->ImageFileSmall : $row->ImageFileMedium);
+
+    //Only add if the image is set in BV
+    if($imageURL != $siteRoot){
+      //Get the image and Base64 Encode it
+      $ch = curl_init();
+      curl_setopt($ch, CURLOPT_URL, "$imageURL");
+      curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); 
+      curl_setopt($ch, CURLOPT_HEADER, 0);
+      $out = curl_exec($ch);
+      $mimetype = curl_getinfo($ch, CURLINFO_CONTENT_TYPE);
+      curl_close($ch);
+      $base_64_image = base64_encode($out);
+
+      //Send the image to the API
+      $file = array(
+        'name'    => strtolower(preg_replace("/[^A-Za-z0-9]/", '_', $row->ProductName)),
+        'content' => $base_64_image,
+        'mime'    => $mimetype
+      );
+      
+      $result = $client->catalogProductAttributeMediaCreate(
+        $session,
+        $product_id,
+        array(
+          'file'      => $file, 
+          'label'     => iconv ( "windows-1252" , "UTF-8" , $row->ProductName ), 
+          'position'  => '0', 
+          'types'     => array(
+            'image', 
+            'small_image', 
+            'thumbnail'
+          ), 
+          'exclude' => 0
+        )
+      );
+    } else{
+      $result = "No image found";
+    }
+    
+    $sql = "INSERT INTO bv_x_magento_product_images (`bvin`) VALUES ( '" . $row->bvin . "');";
     try{
       $mag_dbh->query($sql);
     } catch(PDOException $e) {  
       echo $e->getMessage();
       exit();
     }
-    //echo "Magento Category ID: " . $id;
+    
+    echo "Result: " . $result . " for product: " . $row->ProductName;
+
   } else {
     echo "Record already added";
   }

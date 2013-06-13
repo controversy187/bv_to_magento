@@ -10,9 +10,9 @@ try {
   $mag_dbh->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING );
 
   //Check if the table exists, create it if it doesn't
-  if(!checkTable('bv_x_magento_products', $mag_dbh)){
+  if(!checkTable('bv_x_magento_product_images', $mag_dbh)){
     $result = $mag_dbh->query('
-      CREATE TABLE `bv_x_magento_products` (
+      CREATE TABLE `bv_x_magento_product_images` (
         `id` int(11) NOT NULL AUTO_INCREMENT,
         `bvin` varchar(45) DEFAULT NULL,
         `mag_id` int(10) DEFAULT NULL,
@@ -60,7 +60,7 @@ $(document).ready(function(){
   totalBvins = bvins.length;
   $('#responseBlock1').append('Adding ' + totalBvins + ' bvins<br>');
 
-  //totalBvins = 5; // Delete this when going live. Only limit to 5 bvins for development
+  totalBvins = 10; // Delete this when going live. Only limit to 5 bvins for development
   addProductImage(bvins[0], 0, totalBvins);
 });
 
