@@ -14,7 +14,7 @@ try {
     $result = $mag_dbh->query('
       CREATE TABLE `bv_x_magento_users` (
         `id` int(11) NOT NULL AUTO_INCREMENT,
-        `bvin` varchar(45) DEFAULT NULL,
+        `bvin` varchar(63) DEFAULT NULL,
         `mag_id` int(10) DEFAULT NULL,
         PRIMARY KEY (`id`),
         UNIQUE KEY `bvin_UNIQUE` (`bvin`)
@@ -34,7 +34,7 @@ try {
   $dbh = new PDO("mysql:host=" . SRC_DB_HOST . ";dbname=". SRC_DB_NAME, SRC_DB_USER, SRC_DB_PW); 
   $dbh->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING );
 
-  $result = $dbh->query('SELECT * from bvc_User');
+  $result = $dbh->query('SELECT DISTINCT(`Email`) from bvc_User');
 } catch(PDOException $e) {  
   echo $e->getMessage();
   exit();
@@ -58,7 +58,7 @@ $dbh = null;
 $(document).ready(function(){
 
   totalBvins = bvins.length;
-  $('#responseBlock1').append('Adding ' + totalBvins + ' bvins<br>');
+  $('#responseBlock1').append('Adding ' + totalBvins + ' emails<br>');
 
   //totalBvins = 10; // Delete this when going live. Only limit to 10 bvins for development
   addUser(bvins[0], 0, totalBvins);

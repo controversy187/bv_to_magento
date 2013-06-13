@@ -23,7 +23,7 @@ try {
   $dbh = new PDO("mysql:host=" . SRC_DB_HOST . ";dbname=". SRC_DB_NAME, SRC_DB_USER, SRC_DB_PW); 
   $dbh->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING );
 
-  $select_user = $dbh->prepare( "SELECT * FROM bvc_User WHERE `bvin` = :bvin_id" );
+  $select_user = $dbh->prepare( "SELECT * FROM bvc_User WHERE `Email` = :bvin_id ORDER BY `LastLoginDate` DESC LIMIT 1" );
   $select_user->bindParam(':bvin_id', $bvin);
   $select_user->execute();
 } catch(PDOException $e) {  
