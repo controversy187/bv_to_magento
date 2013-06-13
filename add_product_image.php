@@ -95,7 +95,7 @@ if($row = $select_product->fetchObject()){
       exit();
     }
     
-    echo "Result: " . $result . " for product: " . $row->ProductName;
+    echo "Result: " . $result . " for product: " . iconv ( "windows-1252" , "UTF-8" , $row->ProductName );
 
   } else {
     echo "Record already added";

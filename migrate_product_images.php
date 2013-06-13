@@ -42,6 +42,7 @@ try {
 ?>
 
 <html>
+<head>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js" ></script>
 <script>
 var bvins = new Array();
@@ -60,7 +61,7 @@ $(document).ready(function(){
   totalBvins = bvins.length;
   $('#responseBlock1').append('Adding ' + totalBvins + ' bvins<br>');
 
-  totalBvins = 10; // Delete this when going live. Only limit to 5 bvins for development
+  //totalBvins = 10; // Delete this when going live. Only limit to 5 bvins for development
   addProductImage(bvins[0], 0, totalBvins);
 });
 
@@ -81,6 +82,7 @@ function addProductImage(bvin_id, iteration, max){
   });
 }
 </script>
+</head>
 <body>
 <div id="responseBlock1"></div>
 
