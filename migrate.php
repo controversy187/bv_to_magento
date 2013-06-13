@@ -6,3 +6,4 @@
 6. <a href="migrate_products.php" target="_blank">Create Products</a><br>
 7. <!--<a href="migrate_options.php" target="_blank">-->Create Product Custom Options<!--</a>--> - Not actively used in DHP.<br>
 8. <a href="migrate_users.php" target="_blank">Create Users</a><br>
+9. <a href="migrate_product_images.php" target="_blank">Import Product Images</a><br>
