@@ -8,7 +8,7 @@ $bvin = $_POST['bvin'];
 // Establish connection to Magento DB
 try {
   # MySQL with PDO_MYSQL  
-  $mag_dbh = new PDO("mysql:host=" . MAG_DB_HOST . ";dbname=". MAG_DB_NAME, MAG_DB_USER, MAG_DB_PW); 
+  $mag_dbh = new PDO("mysql:host=" . MAG_DB_HOST . ";dbname=". MAG_DB_NAME, MAG_DB_USER, MAG_DB_PW, array(PDO::ATTR_PERSISTENT => true)); 
   $mag_dbh->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING );
 }  
 catch(PDOException $e) {  
@@ -20,7 +20,7 @@ catch(PDOException $e) {
 // Get BV Data
 try {
   # MySQL with PDO_MYSQL  
-  $dbh = new PDO("mysql:host=" . SRC_DB_HOST . ";dbname=". SRC_DB_NAME, SRC_DB_USER, SRC_DB_PW); 
+  $dbh = new PDO("mysql:host=" . SRC_DB_HOST . ";dbname=". SRC_DB_NAME, SRC_DB_USER, SRC_DB_PW, array(PDO::ATTR_PERSISTENT => true)); 
   $dbh->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING );
 
   $select_user = $dbh->prepare( "SELECT * FROM bvc_User WHERE `Email` = :bvin_id ORDER BY `LastLoginDate` DESC LIMIT 1" );
