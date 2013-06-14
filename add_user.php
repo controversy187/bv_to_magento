@@ -49,7 +49,10 @@ if($row = $select_user->fetchObject()){
       'group_id' => 1
     ));
     
-    
+    $addresses = sort_address_xml($row->BillingAddress, $row->ShippingAddress, $row->AddressBook);
+    foreach ($addresses as $addy){
+    	$result = $client->customerAddressCreate($session, $id, $addy);
+    }
 
     $sql = "INSERT INTO bv_x_magento_users (`bvin`, `mag_id`) VALUES ( '" . $row->Email . "', " . $id ." );";
     try{
@@ -64,6 +67,100 @@ if($row = $select_user->fetchObject()){
   }
 } else {
   echo "Error: bvin $bvin not found";
+}
+
+
+function sort_address_xml($billingAddress, $shippingAddress, $addressBook) {
+	$addresses = array();
+	
+	//because it keeps saying its utf-16... but its all utf-8
+	$address = new SimpleXMLElement(preg_replace('/utf-16/', 'utf-8', $billingAddress));
+	
+	$billing = array(
+		'city' => $address->City,
+		'country_id' => $address->CountryName,
+		'postcode' => $address->PostalCode,
+		'region' => $address->RegionName,
+		'street' => array($address->Line1),
+		'telephone' => $address->Phone,
+		'lastname' => $address->LastName,
+		'firstname' => $address->FirstName,
+		'is_default_billing' => true
+	);
+	if(!empty($address->Line2))
+		$billing['street'][] = $address->Line2;
+	if(!empty($address->MiddleInitial))
+		$billing['firstname'].= ' '.$address->MiddleInitial;
+	
+	
+	$address = new SimpleXMLElement(preg_replace('/utf-16/', 'utf-8', $shippingAddress));
+	if(		$billing['city'] == $address->City &&
+			$billing['country_id'] == $address->CountryName &&
+			$billing['postcode'] == $address->PostalCode &&
+			$billing['region'] == $address->RegionName &&
+			$billing['street'][0] == $address->Line1 &&
+			$billing['telephone'] == $address->Phone &&
+			$billing['lastname'] == $address->LastName &&
+			$billing['firstname'] == $address->FirstName
+			) {
+		$billing['is_default_shipping'] = true;
+		$addresses = array($billing);
+	}
+	else {
+		$shipping = array(
+			'city' => $address->City,
+			'country_id' => $address->CountryName,
+			'postcode' => $address->PostalCode,
+			'region' => $address->RegionName,
+			'street' => array($address->Line1),
+			'telephone' => $address->Phone,
+			'lastname' => $address->LastName,
+			'firstname' => $address->FirstName,
+			'is_default_shipping ' => true
+		);
+		if(!empty($address->Line2))
+			$shipping['street'][] = $address->Line2;
+		if(!empty($address->MiddleInitial))
+			$shipping['firstname'].= ' '.$address->MiddleInitial;
+		$addresses = array($billing, $shipping);
+	}
+	
+	if(!empty($addressBook) && strlen($addressBook)>60) {
+		$addressset = new SimpleXMLElement(preg_replace('/utf-16/', 'utf-8', $addressBook));
+		foreach($addressset->children() as $address) {
+			foreach($addresses as $ad)
+				if(!(	$ad['city'] == $address->City &&
+						$ad['country_id'] == $address->CountryName &&
+						$ad['postcode'] == $address->PostalCode &&
+						$ad['region'] == $address->RegionName &&
+						$ad['street'][0] == $address->Line1 &&
+						$ad['telephone'] == $address->Phone &&
+						$ad['lastname'] == $address->LastName &&
+						$ad['firstname'] == $address->FirstName
+				)) {
+						continue 2;  //if anything matches, discard and move on
+				}
+			
+			$tmp = array(
+					'city' => $address->City,
+					'country_id' => $address->CountryName,
+					'postcode' => $address->PostalCode,
+					'region' => $address->RegionName,
+					'street' => array($address->Line1),
+					'telephone' => $address->Phone,
+					'lastname' => $address->LastName,
+					'firstname' => $address->FirstName,
+			);
+			if(!empty($address->Line2))
+				$tmp['street'][] = $address->Line2;
+			if(!empty($address->MiddleInitial))
+				$tmp['firstname'].= ' '.$address->MiddleInitial;
+			$addresses[] = $tmp;
+			
+		}
+	}
+	
+	return $addresses;
 }
 
 
