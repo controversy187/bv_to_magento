@@ -42,7 +42,8 @@ if($row = $select_category->fetchObject()){
     $attribute_set_id = bvinToMag('bv_x_magento_attribute_sets', $row->ProductTypeId, $mag_dbh);
     $category_bvin = getBVCategoryFromProductBvin($row->bvin, $dbh);
     $category_id = bvinToMag('bv_x_magento_categories', $category_bvin, $mag_dbh);
-    
+    $status = ($row->Status == 1 ? 1 : 2)
+
     $id = $client->catalogProductCreate($session, 'simple', $attribute_set_id, $row->SKU, array(
         'categories' => array($category_id),
         'websites' => array(1),
@@ -50,7 +51,7 @@ if($row = $select_category->fetchObject()){
         'description' => iconv ( "windows-1252" , "UTF-8" , $row->LongDescription ),
         'short_description' => iconv ( "windows-1252" , "UTF-8" , $row->ShortDescription ),
         'weight' => $row->ShippingWeight,
-        'status' => $row->Status,
+        'status' => $status,
         //'url_key' => 'product-url-key',
         //'url_path' => 'product-url-path',
         //'visibility' => '4',
