@@ -40,23 +40,31 @@ if($row = $select_category->fetchObject()){
     
     // Get magento set ID from BV ProductTypeID
     $attribute_set_id = bvinToMag('bv_x_magento_attribute_sets', $row->ProductTypeId, $mag_dbh);
-    $category_bvin = getBVCategoryFromProductBvin($row->bvin, $dbh);
-    $category_id = bvinToMag('bv_x_magento_categories', $category_bvin, $mag_dbh);
-    
+    $category_bvin    = getBVCategoryFromProductBvin($row->bvin, $dbh);
+    $category_id      = bvinToMag('bv_x_magento_categories', $category_bvin, $mag_dbh);
+    $status           = ($row->Status == "1" ? 1 : 2);        //In magento, 1 = active, 2 = inactive
+    $tax_class        = ($row->TaxExempt == "1" ? 0 : 2);  //0 = none, 2 = taxable goods
+    $meta_title       = ($row->MetaTitle == "" ? iconv ( "windows-1252" , "UTF-8" , $row->ProductName ) : iconv ( "windows-1252" , "UTF-8" , $row->MetaTitle ));
+    //If we don't have a long description, use the short description as well
+    $longDesc         = ($row->LongDescription == "" ? iconv ( "windows-1252" , "UTF-8" , $row->ShortDescription ) : iconv ( "windows-1252" , "UTF-8" , $row->LongDescription ));
+    //If we don't have a short description, use a truncated long description. That looks messy.
+    $shortDesc        = ($row->ShortDescription == "" ? (strlen($longDesc) > 125 ? substr($longDesc, 0, 125) . "... " : substr($longDesc, 0, 125)) : iconv ( "windows-1252" , "UTF-8" , $row->ShortDescription ));
+//    echo "<pre>";var_dump($row);echo("</pre>");
+
     $id = $client->catalogProductCreate($session, 'simple', $attribute_set_id, $row->SKU, array(
         'categories' => array($category_id),
         'websites' => array(1),
         'name' => iconv ( "windows-1252" , "UTF-8" , $row->ProductName ),
-        'description' => iconv ( "windows-1252" , "UTF-8" , $row->LongDescription ),
-        'short_description' => iconv ( "windows-1252" , "UTF-8" , $row->ShortDescription ),
+        'description' => $longDesc,
+        'short_description' => $shortDesc,
         'weight' => $row->ShippingWeight,
-        'status' => $row->Status,
+        'status' => $status,
         //'url_key' => 'product-url-key',
         //'url_path' => 'product-url-path',
         //'visibility' => '4',
         'price' => $row->SitePrice,
-        //'tax_class_id' => 1,
-        'meta_title' => iconv ( "windows-1252" , "UTF-8" , $row->MetaTitle ),
+        'tax_class_id' => $tax_class ,
+        'meta_title' => $meta_title,
         'meta_keyword' => iconv ( "windows-1252" , "UTF-8" , $row->MetaKeywords ),
         'meta_description' => iconv ( "windows-1252" , "UTF-8" , $row->MetaDescription )
     ));
