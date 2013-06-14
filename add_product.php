@@ -42,7 +42,9 @@ if($row = $select_category->fetchObject()){
     $attribute_set_id = bvinToMag('bv_x_magento_attribute_sets', $row->ProductTypeId, $mag_dbh);
     $category_bvin = getBVCategoryFromProductBvin($row->bvin, $dbh);
     $category_id = bvinToMag('bv_x_magento_categories', $category_bvin, $mag_dbh);
-    $status = ($row->Status == 1 ? 1 : 2)
+    $status = ($row->Status == "1" ? 1 : 2);        //In magento, 1 = active, 2 = inactive
+    $tax_class = ($row->TaxExempt == "1" ? 0 : 2);  //0 = none, 2 = taxable goods
+//    echo "<pre>";var_dump($row);echo("</pre>");
 
     $id = $client->catalogProductCreate($session, 'simple', $attribute_set_id, $row->SKU, array(
         'categories' => array($category_id),
@@ -56,7 +58,7 @@ if($row = $select_category->fetchObject()){
         //'url_path' => 'product-url-path',
         //'visibility' => '4',
         'price' => $row->SitePrice,
-        //'tax_class_id' => 1,
+        'tax_class_id' => $tax_class,
         'meta_title' => iconv ( "windows-1252" , "UTF-8" , $row->MetaTitle ),
         'meta_keyword' => iconv ( "windows-1252" , "UTF-8" , $row->MetaKeywords ),
         'meta_description' => iconv ( "windows-1252" , "UTF-8" , $row->MetaDescription )
