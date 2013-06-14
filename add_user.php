@@ -34,19 +34,24 @@ try {
 if($row = $select_user->fetchObject()){
 
   // Check if we already imported this Bvin
-  if(!checkBvinExists($row->bvin, 'bv_x_magento_users', $mag_dbh)){
+  if(!checkBvinExists($row->Email, 'bv_x_magento_users', $mag_dbh)){
+  	
+    if(empty($row->PasswordHint))
+    	$row->PasswordHint = md5($row->Salt);
     
     $id = $client->customerCustomerCreate($session, array(
       'email' => $row->Email,
       'firstname' => $row->FirstName, 
       'lastname' => $row->LastName, 
-      'password' => sha1(uniqid(mt_rand(), true) . $row->bvin), 
+      'password' =>$row->PasswordHint, 
       'website_id' => 1, 
       'store_id' => 1, 
       'group_id' => 1
     ));
+    
+    
 
-    $sql = "INSERT INTO bv_x_magento_users (`bvin`, `mag_id`) VALUES ( '" . $row->bvin . "', " . $id ." );";
+    $sql = "INSERT INTO bv_x_magento_users (`bvin`, `mag_id`) VALUES ( '" . $row->Email . "', " . $id ." );";
     try{
       $mag_dbh->query($sql);
     } catch(PDOException $e) {  
