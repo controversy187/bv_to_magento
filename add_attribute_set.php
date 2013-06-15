@@ -38,7 +38,7 @@ if($row = $select_property->fetchObject()){
     $id = $client->catalogProductAttributeSetCreate(
       $session,
       $row->ProductTypeName,
-      4 // Set this as a child of the default set for products
+      DEFAULT_ATTRIBUTE_SET_ID // Set this as a child of the default set for products
     );
 
     $sql = "INSERT INTO bv_x_magento_attribute_sets (`bvin`, `mag_id`) VALUES ( '" . $row->bvin . "', " . $id ." );";

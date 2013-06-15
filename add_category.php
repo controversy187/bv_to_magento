@@ -39,22 +39,23 @@ if($row = $select_category->fetchObject()){
     
     // Create the Category
     $id = $client->catalogCategoryCreate($session, ROOT_CATEGORY_ID, array(
-      'name' => iconv ( "windows-1252" , "UTF-8" , $row->Name ),
-      'is_active' => 1,
-      'available_sort_by' => array('position'),
-      'custom_design' => null,
-      'custom_apply_to_products' => null,
-      'custom_design_from' => null,
-      'custom_design_to' => null,
-      'custom_layout_update' => null,
-      'default_sort_by' => 'position',
-      'description' => iconv ( "windows-1252" , "UTF-8" , $row->Description ),
-      'display_mode' => null,
-      'is_anchor' => 0,
-      'landing_page' => null,
-      'include_in_menu' => 1,
-    ),
-      STORE_CODE);
+        'name' => iconv ( "windows-1252" , "UTF-8" , $row->Name ),
+        'is_active' => 1,
+        'available_sort_by' => array('position'),
+        'custom_design' => null,
+        'custom_apply_to_products' => null,
+        'custom_design_from' => null,
+        'custom_design_to' => null,
+        'custom_layout_update' => null,
+        'default_sort_by' => 'position',
+        'description' => iconv ( "windows-1252" , "UTF-8" , $row->Description ),
+        'display_mode' => null,
+        'is_anchor' => 0,
+        'landing_page' => null,
+        'include_in_menu' => 1,
+      ),
+      STORE_CODE
+    );
 
     $sql = "INSERT INTO bv_x_magento_categories (`bvin`, `mag_id`) VALUES ( '" . $row->bvin . "', " . $id ." );";
     try{

@@ -15,4 +15,9 @@
 	define( 'SOAP_URL', 'http://magentomigrate.com/index.php/api/v2_soap?wsdl=1' );
 	define( 'SOAP_LOGIN', 'bfitzgerald' );
 	define( 'SOAP_API_KEY', 'api_key');
+
+	// Target Website ID
+	define( 'STORE_CODE', 							'dhpca_en' );
+	define( 'ROOT_CATEGORY_ID', 				79 );
+	define( 'DEFAULT_ATTRIBUTE_SET_ID', 9 );
 ?>

@@ -81,7 +81,8 @@ if($row = $select_product->fetchObject()){
             'thumbnail'
           ), 
           'exclude' => 0
-        )
+        ),
+        STORE_CODE
       );
     } else{
       $result = "No image found";

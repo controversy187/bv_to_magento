@@ -67,7 +67,9 @@ if($row = $select_category->fetchObject()){
         'meta_title' => $meta_title,
         'meta_keyword' => iconv ( "windows-1252" , "UTF-8" , $row->MetaKeywords ),
         'meta_description' => iconv ( "windows-1252" , "UTF-8" , $row->MetaDescription )
-    ));
+      ),
+      STORE_CODE
+    );
 
     $sql = "INSERT INTO bv_x_magento_products (`bvin`, `mag_id`) VALUES ( '" . $row->bvin . "', " . $id ." );";
     try{
