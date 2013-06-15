@@ -70,7 +70,7 @@ $(document).ready(function(){
 
 function addCategory(bvin_id, iteration, max){
   humanNumber = iteration+1;
-  $('#responseBlock1').append('<br>' + humanNumber + ': ' + bvin_id + "... ");
+  $('#responseBlock1').append('<br>' + humanNumber + ' / ' + max + ' : ' + bvin_id + '... ');
 
   $.ajax({
     url: "add_category.php",

@@ -78,7 +78,7 @@ if($row = $select_category->fetchObject()){
       echo $e->getMessage();
       exit();
     }
-    //echo "Magento Category ID: " . $id;
+    echo "Magento Product ID: " . $id;
   } else {
     echo "Record already added";
   }
