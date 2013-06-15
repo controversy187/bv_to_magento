@@ -36,9 +36,9 @@ if($row = $select_category->fetchObject()){
   
   // Check if we already imported this Bvin
   if(!checkBvinExists($row->bvin, 'bv_x_magento_categories', $mag_dbh)){
-
+    
     // Create the Category
-    $id = $client->catalogCategoryCreate($session, 2, array(
+    $id = $client->catalogCategoryCreate($session, ROOT_CATEGORY_ID, array(
       'name' => iconv ( "windows-1252" , "UTF-8" , $row->Name ),
       'is_active' => 1,
       'available_sort_by' => array('position'),
@@ -53,7 +53,8 @@ if($row = $select_category->fetchObject()){
       'is_anchor' => 0,
       'landing_page' => null,
       'include_in_menu' => 1,
-    ));
+    ),
+      STORE_CODE);
 
     $sql = "INSERT INTO bv_x_magento_categories (`bvin`, `mag_id`) VALUES ( '" . $row->bvin . "', " . $id ." );";
     try{
