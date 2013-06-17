@@ -45,21 +45,26 @@ try {
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js" ></script>
 <script>
 var bvins = new Array();
-
+var attributes = new Array();
 <?php
 // Create all the categories in a non-hiearchy. Store the IDs in the DB for later use
 // and store them in an array for use later in this code.
 
 while($row = $result->fetchObject()) echo "bvins.push('" . $row->bvin . "');\n";
 
+$attributes = getAttributeArray($client, $session);
+foreach ($attributes as $id => $code) {
+  echo "attributes[$id] = '$code'; \n";
+}
+
 $mag_dbh = null;
 $dbh = null;
 ?>
-$(document).ready(function(){
+var jsonString = JSON.stringify(attributes);
 
+$(document).ready(function(){
   totalBvins = bvins.length;
   $('#responseBlock1').append('Adding ' + totalBvins + ' Product Attributes<br>');
-
   addAttribute(bvins[0], 0, totalBvins);
 });
 
@@ -70,7 +75,7 @@ function addAttribute(bvin_id, iteration, max){
   $.ajax({
     url: "add_attribute.php",
     type: "POST",
-    data: {bvin : bvin_id},
+    data: {bvin : bvin_id, attributes : jsonString},
     dataType: "html"
   }).done(function(msg, status) {
     $('#responseBlock1').append(status + " - " + msg );

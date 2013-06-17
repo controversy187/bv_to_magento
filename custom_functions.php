@@ -18,6 +18,20 @@ function checkAttributeSetExists($productTypeName, $client, $session){
 	return false;
 }
 
+function getAttributeArray($client, $session){
+	$attributeArray = array();
+
+	$result = $client->catalogProductAttributeSetList($session);
+	
+	foreach ($result as $set) {
+		$attributes = $client->catalogProductAttributeList($session, $set->set_id);
+		foreach ($attributes as $attribute) {
+			$attributeArray[$attribute->attribute_id] = $attribute->code;
+		}
+	}
+	return $attributeArray;
+}
+
 /**
  * Looks up a Magento id from a table that maps Bvins to Magento IDs
  * @param  String $table Name of the table that contains the mappings
