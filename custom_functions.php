@@ -8,6 +8,16 @@ function checkBvinExists($bvin, $table, $dbh){
 	return $dbh->query("SELECT count(*) FROM $table WHERE `bvin` = '$bvin'")->fetchColumn() > 0;
 }
 
+function checkAttributeSetExists($productTypeName, $client, $session){
+	$result = $client->catalogProductAttributeSetList($session);
+	
+	foreach ($result as $set) {
+		if(isset($set->name) && $set->name == $productTypeName) return $set->set_id;
+	}
+
+	return false;
+}
+
 /**
  * Looks up a Magento id from a table that maps Bvins to Magento IDs
  * @param  String $table Name of the table that contains the mappings
@@ -49,5 +59,14 @@ function getBVCategoryFromProductBvin($product_bvin, $dbh){
   } else {
   	return false;
   }
+}
+
+function generateRandomString($length = 10) {
+	$characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+	$randomString = '';
+	for ($i = 0; $i < $length; $i++) {
+		$randomString .= $characters[rand(0, strlen($characters) - 1)];
+	}
+	return $randomString;
 }
 ?>
