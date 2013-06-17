@@ -16,8 +16,9 @@
 	define( 'SOAP_LOGIN', 'bfitzgerald' );
 	define( 'SOAP_API_KEY', 'api_key');
 
-	// Target Website ID
-	define( 'STORE_CODE', 							'dhpca_en' );
-	define( 'ROOT_CATEGORY_ID', 				79 );
-	define( 'DEFAULT_ATTRIBUTE_SET_ID', 9 );
+	// Target Website/Store Information
+	define( 'WEBSITE_ID', 							2 ); #Website ID
+	define( 'STORE_CODE', 							'test_view' ); #Store View Code
+	define( 'ROOT_CATEGORY_ID', 				346 );
+	define( 'DEFAULT_ATTRIBUTE_SET_ID', 20 );
 ?>
