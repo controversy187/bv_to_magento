@@ -20,12 +20,19 @@ catch(PDOException $e) {
 
 $attribute_id = bvinToMag('bv_x_magento_attributes', $bvin, $mag_dbh);
 $set_id = bvinToMag('bv_x_magento_attribute_sets', $set_bvin, $mag_dbh);
-
-$return = $client->catalogProductAttributeSetAttributeAdd(
+try{
+  $return = $client->catalogProductAttributeSetAttributeAdd(
     $session,
     $attribute_id,
     $set_id
-);
+  ); 
+} catch (SoapFault $e) { 
+  if($e->faultcode == "109"){  // Attribute already exists in set
+    echo "Attribute already exists in set.";
+    exit();
+  }
+} 
+
 
 if($return) {
   echo "Success - Attribute $attribute_id is a part of set $set_id";
