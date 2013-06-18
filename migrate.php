@@ -4,6 +4,6 @@
 4. <a href="migrate_attributes.php" target="_blank">Import Attributes</a> (Admin controlled properties of products)<br>
 5. <a href="assign_attributes_to_sets.php" target="_blank">Assign Attributes to Sets</a> (Admin controlled properties of products)<br>
 6. <a href="migrate_products.php" target="_blank">Create Products</a><br>
-7. <!--<a href="migrate_options.php" target="_blank">-->Create Product Custom Options<!--</a>--> - Not actively used in DHP.<br>
+7. <a href="migrate_product_images.php" target="_blank">Import Product Images</a><br>
 8. <a href="migrate_users.php" target="_blank">Create Users</a><br>
-9. <a href="migrate_product_images.php" target="_blank">Import Product Images</a><br>
+
