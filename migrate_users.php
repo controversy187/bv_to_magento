@@ -34,7 +34,7 @@ try {
   $dbh = new PDO("mysql:host=" . SRC_DB_HOST . ";dbname=". SRC_DB_NAME, SRC_DB_USER, SRC_DB_PW, array(PDO::ATTR_PERSISTENT => true)); 
   $dbh->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING );
 
-  $result = $dbh->query('SELECT DISTINCT(`Email`) from bvc_User');
+  $result = $dbh->query('SELECT DISTINCT(`Email`) as bvin from bvc_User');
 } catch(PDOException $e) {  
   echo $e->getMessage();
   exit();
