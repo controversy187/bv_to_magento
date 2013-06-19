@@ -1,6 +1,5 @@
 <?php
 include( 'config.php' );
-include( 'api_functions.php' );
 include( 'custom_functions.php' );
 
 $bvin = $_POST['bvin'];
@@ -38,7 +37,9 @@ if($row = $select_user->fetchObject()){
   	
     if(empty($row->PasswordHint))
     	$row->PasswordHint = md5($row->Salt);
-    
+
+    include( 'api_functions.php' );
+
     $id = $client->customerCustomerCreate($session, array(
       'email' => $row->Email,
       'firstname' => iconv ( "windows-1252" , "UTF-8" , $row->FirstName ), 

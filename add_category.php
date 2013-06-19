@@ -1,6 +1,5 @@
 <?php
 include( 'config.php' );
-include( 'api_functions.php' );
 include( 'custom_functions.php' );
 
 $bvin = $_POST['bvin'];
@@ -36,7 +35,8 @@ if($row = $select_category->fetchObject()){
   
   // Check if we already imported this Bvin
   if(!checkBvinExists($row->bvin, 'bv_x_magento_categories', $mag_dbh)){
-    
+    include( 'api_functions.php' );
+
     // Create the Category
     $id = $client->catalogCategoryCreate($session, ROOT_CATEGORY_ID, array(
         'name' => iconv ( "windows-1252" , "UTF-8" , $row->Name ),

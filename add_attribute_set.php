@@ -1,6 +1,5 @@
 <?php
 include( 'config.php' );
-include( 'api_functions.php' );
 include( 'custom_functions.php' );
 
 $bvin = $_POST['bvin'];
@@ -35,6 +34,7 @@ if($row = $select_property->fetchObject()){
   
   // Check if we already imported this Bvin
   if(!checkBvinExists($row->bvin, 'bv_x_magento_attribute_sets', $mag_dbh)){
+    include( 'api_functions.php' );
     if($id = checkAttributeSetExists($row->ProductTypeName, $client, $session)){
       $sql = "INSERT INTO bv_x_magento_attribute_sets (`bvin`, `mag_id`) VALUES ( '" . $row->bvin . "', " . $id ." );";
       echo "Resuing old id: " . $id . " for set " . $row->ProductTypeName;

@@ -1,6 +1,5 @@
 <?php
 include( 'config.php' );
-include( 'api_functions.php' );
 include( 'custom_functions.php' );
 
 $bvin = $_POST['bvin'];
@@ -68,6 +67,8 @@ if($row = $select_category->fetchObject()){
       'meta_keyword' => iconv ( "windows-1252" , "UTF-8" , $row->MetaKeywords ),
       'meta_description' => iconv ( "windows-1252" , "UTF-8" , $row->MetaDescription )
     );
+
+    include( 'api_functions.php' );
 
     try{
       $id = $client->catalogProductCreate($session, 'simple', $attribute_set_id, $row->SKU, $dataArray, STORE_CODE );
