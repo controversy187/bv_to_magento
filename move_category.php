@@ -35,7 +35,7 @@ if($row = $select_category->fetchObject()){
   //echo "<pre>";var_dump($row);die("</pre>");
   $parent_bvin = $row->ParentID;
   
-  if($row->ParentID != 0){
+  if($row->ParentID != "0"){
     //Lookup Parent Magento ID
     try {
       $lookup_parent = $mag_dbh->prepare( "SELECT * FROM bv_x_magento_categories WHERE `bvin` = :bvin_id" );
@@ -48,6 +48,8 @@ if($row = $select_category->fetchObject()){
     if($response = $lookup_parent->fetchObject()){
       $parent_mag_id = $response->mag_id;
     }
+
+    include( 'api_functions.php' );
 
     $return = $client->catalogCategoryMove($session, $mag_id, $parent_mag_id);
 
