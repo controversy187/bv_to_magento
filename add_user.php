@@ -23,7 +23,7 @@ try {
   $dbh = new PDO("mysql:host=" . SRC_DB_HOST . ";dbname=". SRC_DB_NAME, SRC_DB_USER, SRC_DB_PW, array(PDO::ATTR_PERSISTENT => true)); 
   $dbh->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING );
 
-  $select_user = $dbh->prepare( "SELECT * FROM bvc_User WHERE `Email` = :bvin_id ORDER BY `LastLoginDate` DESC LIMIT 1" );
+  $select_user = $dbh->prepare( "SELECT * FROM bvc_User WHERE LOWER(`Email`) = :bvin_id ORDER BY `LastLoginDate` DESC LIMIT 1" );
   $select_user->bindParam(':bvin_id', $bvin);
   $select_user->execute();
 } catch(PDOException $e) {  
@@ -41,8 +41,8 @@ if($row = $select_user->fetchObject()){
     
     $id = $client->customerCustomerCreate($session, array(
       'email' => $row->Email,
-      'firstname' => $row->FirstName, 
-      'lastname' => $row->LastName, 
+      'firstname' => iconv ( "windows-1252" , "UTF-8" , $row->FirstName ), 
+      'lastname' => iconv ( "windows-1252" , "UTF-8" , $row->LastName ), 
       'password' => sha1(uniqid(mt_rand(), true) . $row->bvin), 
       'website_id' => 1, 
       'store_id' => 1, 
