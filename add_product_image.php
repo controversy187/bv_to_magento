@@ -1,6 +1,5 @@
 <?php
 include( 'config.php' );
-include( 'api_functions.php' );
 include( 'custom_functions.php' );
 
 $bvin = $_POST['bvin'];
@@ -67,7 +66,9 @@ if($row = $select_product->fetchObject()){
         'content' => $base_64_image,
         'mime'    => $mimetype
       );
-      
+
+      include( 'api_functions.php' );
+
       $result = $client->catalogProductAttributeMediaCreate(
         $session,
         $product_id,

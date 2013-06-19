@@ -1,6 +1,5 @@
 <?php
 include( 'config.php' );
-include( 'api_functions.php' );
 include( 'custom_functions.php' );
 
 $bvin       = $_POST['bvin'];
@@ -101,6 +100,9 @@ if($row = $select_property->fetchObject()){
         "additional_fields" => array(),
         "frontend_label" => array(array("store_id" => "0", "label" => $row->DisplayName))
       );
+
+      include( 'api_functions.php' );
+
       try{
         $id = $client->catalogProductAttributeCreate($session, $data);  
       } catch (SoapFault $e) { 

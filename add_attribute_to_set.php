@@ -1,6 +1,5 @@
 <?php
 include( 'config.php' );
-include( 'api_functions.php' );
 include( 'custom_functions.php' );
 
 $bvin = $_POST['bvin'];
@@ -20,6 +19,7 @@ catch(PDOException $e) {
 
 $attribute_id = bvinToMag('bv_x_magento_attributes', $bvin, $mag_dbh);
 $set_id = bvinToMag('bv_x_magento_attribute_sets', $set_bvin, $mag_dbh);
+include( 'api_functions.php' );
 try{
   $return = $client->catalogProductAttributeSetAttributeAdd(
     $session,

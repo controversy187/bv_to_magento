@@ -1,6 +1,5 @@
 <?php
 include( 'config.php' );
-include( 'api_functions.php' );
 include( 'custom_functions.php' );
 
 $product_bvin = $_POST['product_bvin_id'];
@@ -47,7 +46,7 @@ if($row = $select_property->fetchObject()){
     $data = array(
       
     );
-    
+    include( 'api_functions.php' );
     $id = $client->catalogProductCustomOptionAdd($session, $data);
 
     $sql = "INSERT INTO bv_x_magento_options (`bvin`, `mag_id`) VALUES ( '" . $row->bvin . "', " . $id ." );";
