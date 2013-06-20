@@ -35,13 +35,12 @@ if($row = $select_category->fetchObject()){
   
   // Check if we already imported this Bvin
   if(!checkBvinExists($row->bvin, 'bv_x_magento_products', $mag_dbh)){
-    //echo "<pre>";var_dump($row);die("</pre>");
-    
+    $category_bvins   = getBVCategoryFromProductBvin($row->bvin, $dbh);
+    $category_ids     = bvCategoriesToMagentoCategoryIds($category_bvins, $mag_dbh);
+
     // Get magento set ID from BV ProductTypeID
     $name             = iconv ( "windows-1252" , "UTF-8" , $row->ProductName );
     $attribute_set_id = ($row->ProductTypeId == "" ? DEFAULT_ATTRIBUTE_SET_ID : bvinToMag('bv_x_magento_attribute_sets', $row->ProductTypeId, $mag_dbh));
-    $category_bvin    = getBVCategoryFromProductBvin($row->bvin, $dbh);
-    $category_id      = bvinToMag('bv_x_magento_categories', $category_bvin, $mag_dbh);
     $status           = ($row->Status == "1" ? 1 : 2);        //In magento, 1 = active, 2 = inactive
     $tax_class        = ($row->TaxExempt == "1" ? 0 : 2);  //0 = none, 2 = taxable goods
     $meta_title       = ($row->MetaTitle == "" ? iconv ( "windows-1252" , "UTF-8" , $row->ProductName ) : iconv ( "windows-1252" , "UTF-8" , $row->MetaTitle ));
@@ -51,7 +50,7 @@ if($row = $select_category->fetchObject()){
     $shortDesc        = ($row->ShortDescription == "" ? (strlen($longDesc) > 125 ? substr($longDesc, 0, 125) . "... " : substr($longDesc, 0, 125)) : iconv ( "windows-1252" , "UTF-8" , $row->ShortDescription ));
 
     $dataArray = array(
-      'categories' => array($category_id),
+      'categories' => $category_ids,
       'websites' => array(WEBSITE_ID),
       'name' => $name,
       'description' => $longDesc,

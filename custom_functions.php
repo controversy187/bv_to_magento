@@ -68,11 +68,20 @@ function getBVCategoryFromProductBvin($product_bvin, $dbh){
 	  exit();
 	}
 
-	if($response = $bv_cat->fetchObject()){
-    return $response->CategoryId;
-  } else {
-  	return false;
-  }
+	$catIDs = array();
+	//TODO: This needs to iterate, not return
+	while($response = $bv_cat->fetchObject()){
+		$catIDs[] = $response->CategoryId;
+  } 
+  return $catIDs;
+}
+
+function bvCategoriesToMagentoCategoryIds($category_bvins, $mag_dbh){
+	$cat_ids = array();
+	foreach($category_bvins as $cat_bvin){
+		$cat_ids[] = bvinToMag('bv_x_magento_categories', $cat_bvin, $mag_dbh);
+	}
+	return $cat_ids;
 }
 
 function generateRandomString($length = 10) {
