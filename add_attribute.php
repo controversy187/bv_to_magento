@@ -41,16 +41,7 @@ if($row = $select_property->fetchObject()){
     if($row->PropertyName == ""){
       $PropertyName = $row->bvin;
     }
-    $PropertyName = str_replace(' ', '_', $PropertyName);
-    $PropertyName = str_replace('(', '_', $PropertyName);
-    $PropertyName = str_replace(')', '_', $PropertyName);
-    $PropertyName = str_replace(':', '_', $PropertyName);
-    $PropertyName = str_replace('-', '_', $PropertyName);
-    if (!preg_match('/^[a-z]/i', $PropertyName)) { // Make sure it starts with a letter.
-      $PropertyName = 'a' . $PropertyName;
-    }
-    $PropertyName = strtolower($PropertyName);
-    $PropertyName = substr ( $PropertyName, 0, 29 ); // Make sure it is under 30 characters in length
+    $PropertyName = formatPropertyName($PropertyName);
 
     // Convert BV Type Codes to Magento Frontend Input Types.
     switch ($row->TypeCode) {

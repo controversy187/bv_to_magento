@@ -30,8 +30,11 @@ try {
   exit();
 }
 
+
+
+
+
 if($row = $select_category->fetchObject()){
-  $bv_category[$row->bvin] = $row;
   
   // Check if we already imported this Bvin
   if(!checkBvinExists($row->bvin, 'bv_x_magento_products', $mag_dbh)){
@@ -39,15 +42,16 @@ if($row = $select_category->fetchObject()){
     $category_ids     = bvCategoriesToMagentoCategoryIds($category_bvins, $mag_dbh);
 
     // Get magento set ID from BV ProductTypeID
-    $name             = iconv ( "windows-1252" , "UTF-8" , $row->ProductName );
-    $attribute_set_id = ($row->ProductTypeId == "" ? DEFAULT_ATTRIBUTE_SET_ID : bvinToMag('bv_x_magento_attribute_sets', $row->ProductTypeId, $mag_dbh));
-    $status           = ($row->Status == "1" ? 1 : 2);        //In magento, 1 = active, 2 = inactive
-    $tax_class        = ($row->TaxExempt == "1" ? 0 : 2);  //0 = none, 2 = taxable goods
-    $meta_title       = ($row->MetaTitle == "" ? iconv ( "windows-1252" , "UTF-8" , $row->ProductName ) : iconv ( "windows-1252" , "UTF-8" , $row->MetaTitle ));
+    $name                   = iconv ( "windows-1252" , "UTF-8" , $row->ProductName );
+    $attribute_set_id       = ($row->ProductTypeId == "" ? DEFAULT_ATTRIBUTE_SET_ID : bvinToMag('bv_x_magento_attribute_sets', $row->ProductTypeId, $mag_dbh));
+    $status                 = ($row->Status == "1" ? 1 : 2);        //In magento, 1 = active, 2 = inactive
+    $tax_class              = ($row->TaxExempt == "1" ? 0 : 2);  //0 = none, 2 = taxable goods
+    $meta_title             = ($row->MetaTitle == "" ? iconv ( "windows-1252" , "UTF-8" , $row->ProductName ) : iconv ( "windows-1252" , "UTF-8" , $row->MetaTitle ));
     //If we don't have a long description, use the short description as well
-    $longDesc         = ($row->LongDescription == "" ? iconv ( "windows-1252" , "UTF-8" , $row->ShortDescription ) : iconv ( "windows-1252" , "UTF-8" , $row->LongDescription ));
+    $longDesc               = ($row->LongDescription == "" ? iconv ( "windows-1252" , "UTF-8" , $row->ShortDescription ) : iconv ( "windows-1252" , "UTF-8" , $row->LongDescription ));
     //If we don't have a short description, use a truncated long description. That looks messy.
-    $shortDesc        = ($row->ShortDescription == "" ? (strlen($longDesc) > 125 ? substr($longDesc, 0, 125) . "... " : substr($longDesc, 0, 125)) : iconv ( "windows-1252" , "UTF-8" , $row->ShortDescription ));
+    $shortDesc              = ($row->ShortDescription == "" ? (strlen($longDesc) > 125 ? substr($longDesc, 0, 125) . "... " : substr($longDesc, 0, 125)) : iconv ( "windows-1252" , "UTF-8" , $row->ShortDescription ));
+    $additional_attributes['single_data']  = getAdditionalAttributes($row->bvin, $dbh);
 
     $dataArray = array(
       'categories' => $category_ids,
@@ -64,9 +68,10 @@ if($row = $select_category->fetchObject()){
       'tax_class_id' => $tax_class ,
       'meta_title' => $meta_title,
       'meta_keyword' => iconv ( "windows-1252" , "UTF-8" , $row->MetaKeywords ),
-      'meta_description' => iconv ( "windows-1252" , "UTF-8" , $row->MetaDescription )
+      'meta_description' => iconv ( "windows-1252" , "UTF-8" , $row->MetaDescription ),
+      'additional_attributes' => $additional_attributes
     );
-
+    
     include( 'api_functions.php' );
 
     try{
@@ -85,7 +90,6 @@ if($row = $select_category->fetchObject()){
         //Update this product with new information
         unset($dataArray['websites']); // Only deal with our specific Store, don't update all websites
         $result = $client->catalogProductUpdate($session, $row->SKU . ' ', $dataArray, STORE_CODE);
-
         echo "Existing product added to store - SKU: " . $row->SKU . " - " . $name . ' - ';
       } else{
         echo "<pre>";var_dump($e->faultstring);die("</pre>");
