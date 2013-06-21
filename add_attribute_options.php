@@ -72,8 +72,9 @@ if($row = $select_property->fetchObject()){
     include( 'api_functions.php' );
 
     try{
-      $id = $client->catalogProductAttributeAddOption($session, $attributeID, $data);  
-    } catch (SoapFault $e) { 
+      $id = $client->catalogProductAttributeAddOption($session, $attributeID, $data);
+    } catch (SoapFault $e) {
+      if($e->faultcode = "HTTP") $id = $client->catalogProductAttributeAddOption($session, $attributeID, $data); // Try one more time if you get an http error
       echo "<pre>";var_dump($e->faultcode, $e->faultstring);echo("</pre>");
       echo "<pre>";var_dump("attribute id", $attributeID);echo("</pre>");
       echo "<pre>";var_dump("data", $data);die("</pre>");
