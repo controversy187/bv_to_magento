@@ -37,7 +37,7 @@ if($row = $select_property->fetchObject()){
   if(!checkBvinExists($row->bvin, 'bv_x_magento_attributes_options', $mag_dbh)){
 
     // Catch (some) illegal characters for the Property Name
-    $OptionName = $row->ChoiceName;
+    $OptionName = iconv ( "windows-1252" , "UTF-8" , $row->ChoiceName );
    
     /*
     if($row->OptionName == ""){
