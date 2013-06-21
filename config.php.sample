@@ -1,4 +1,7 @@
 <?php
+	// Iteration
+	define( 'ITERATION', '1' );
+
 	// Source BV DB
 	define( 'SRC_DB_NAME', 'dhporg_1' );
 	define( 'SRC_DB_USER', 'root' );
@@ -17,8 +20,11 @@
 	define( 'SOAP_API_KEY', 'api_key');
 
 	// Target Website/Store Information
+	//define( 'WEBSITE_ID', 							5 ); #Website ID
 	define( 'WEBSITE_ID', 							2 ); #Website ID
+	define( 'STORE_ID',									2	); #Store ID
+	//define( 'STORE_CODE', 							'dhpca_en' ); #Store View Code
 	define( 'STORE_CODE', 							'test_view' ); #Store View Code
 	define( 'ROOT_CATEGORY_ID', 				346 );
-	define( 'DEFAULT_ATTRIBUTE_SET_ID', 20 );
+	define( 'DEFAULT_ATTRIBUTE_SET_ID', 4 );
 ?>
