@@ -58,7 +58,9 @@ var jsonString = JSON.stringify(attributes);
 
 $(document).ready(function(){
   totalBvins = bvins.length;
-  $('#responseBlock1').append('Adding ' + totalBvins + ' Product Attributes<br>');
+
+  //totalBvins = 10; //Comment this out when going live
+  $('#responseBlock1').append('Adding ' + totalBvins + ' Product Attribute Options<br>');
   addAttributeOption(bvins[0], 0, totalBvins);
 });
 

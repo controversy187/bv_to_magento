@@ -3,7 +3,7 @@ include( 'config.php' );
 include( 'custom_functions.php' );
 
 $bvin       = $_POST['bvin'];
-$attributes = array_filter(json_decode(stripslashes($_POST['attributes'])));
+//$attributes = array_filter(json_decode(stripslashes($_POST['attributes'])));
 
 // Establish connection to Magento DB
 try {
@@ -34,7 +34,7 @@ try {
 if($row = $select_property->fetchObject()){
   
   // Check if we already imported this Bvin
-  if(!checkBvinExists($row->bvin, 'bv_x_magento_attributes', $mag_dbh)){
+  if(!checkBvinExists($row->bvin, 'bv_x_magento_attributes_options', $mag_dbh)){
 
     // Catch (some) illegal characters for the Property Name
     $OptionName = $row->ChoiceName;
@@ -55,12 +55,13 @@ if($row = $select_property->fetchObject()){
     $OptionName = substr ( $OptionName, 0, 29 ); // Make sure it is under 30 characters in length
     */
    
-   $attributeID = bvinToMag('bv_x_magento_attributes', $row->bvin, $mag_dbh);
-   
-    $label = array(array(
-      'store_id'  => array(STORE_ID),
-      'value'     => $OptionName
-    ));
+    $attributeID = bvinToMag('bv_x_magento_attributes', $row->PropertyBvin, $mag_dbh);
+
+    $label = array(
+      array( 
+        'store_id'  => array(0,STORE_ID), 
+        'value'     => $OptionName),
+    );
 
     $data = array(
       'label'       => $label,
@@ -73,20 +74,11 @@ if($row = $select_property->fetchObject()){
     try{
       $id = $client->catalogProductAttributeAddOption($session, $attributeID, $data);  
     } catch (SoapFault $e) { 
-      echo "<pre>";var_dump($e->faultstring);die("</pre>");
-    } 
-    
-
-    $sql = "INSERT INTO bv_x_magento_attributes_options (`bvin`, `mag_id`) VALUES ( '" . $row->bvin . "', " . $id ." );";
-    try{
-      $mag_dbh->query($sql);
-    } catch(PDOException $e) {  
-      echo $e->getMessage();
-      exit();
+      echo "<pre>";var_dump($e->faultcode, $e->faultstring);echo("</pre>");
+      echo "<pre>";var_dump("attribute id", $attributeID);echo("</pre>");
+      echo "<pre>";var_dump("data", $data);die("</pre>");
     }
-
-    echo " Magento Attribute ID: " . $id;
-
+    echo 'Added option ' . $OptionName . ' to attribute ' . $attributeID;
   } else {
     echo "Record already added";
   }
