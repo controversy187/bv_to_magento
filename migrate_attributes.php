@@ -51,6 +51,7 @@ var attributes = new Array();
 
 while($row = $result->fetchObject()) echo "bvins.push('" . $row->bvin . "');\n";
 
+include( 'api_functions.php' );
 $attributes = getAttributeArray($client, $session);
 foreach ($attributes as $id => $code) {
   echo "attributes[$id] = '$code'; \n";

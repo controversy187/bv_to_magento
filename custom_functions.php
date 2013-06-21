@@ -45,7 +45,7 @@ function bvinToMag($table, $bvin, $dbh){
 	  $magento_id = $dbh->prepare( "SELECT * FROM `" . mysql_real_escape_string($table) . "` WHERE `bvin` = :bvin_id" );
 	  $magento_id->bindParam(':bvin_id', $bvin);
 	  $magento_id->execute();
-	} catch(PDOException $e) {  
+	} catch(PDOException $e) {   
 	  echo $e->getMessage();
 	  exit();
 	}
