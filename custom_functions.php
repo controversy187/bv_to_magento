@@ -104,7 +104,7 @@ function getAdditionalAttributes($bvin, $dbh){
 
 		$additional_attributes[] = array(
 			'key' 	=> $attributeCode,
-			'value' => $attributeValue
+			'value' => iconv ( "windows-1252" , "UTF-8" , $attributeValue )
 		);
 	}
 

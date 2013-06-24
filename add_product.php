@@ -92,7 +92,7 @@ if($row = $select_category->fetchObject()){
         $result = $client->catalogProductUpdate($session, $row->SKU . ' ', $dataArray, STORE_CODE);
         echo "Existing product added to store - SKU: " . $row->SKU . " - " . $name . ' - ';
       } else{
-        echo "<pre>";var_dump($e->faultstring);die("</pre>");
+        echo "<pre>";var_dump($e->faultstring, $dataArray);die("</pre>");
       }
     } 
 
