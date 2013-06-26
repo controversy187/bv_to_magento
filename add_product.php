@@ -2,6 +2,9 @@
 include( 'config.php' );
 include( 'custom_functions.php' );
 
+$startTime = time();
+
+echo " start: " . time();
 $bvin = $_POST['bvin'];
 
 // Establish connection to Magento DB
@@ -35,7 +38,6 @@ try {
 
 
 if($row = $select_category->fetchObject()){
-  
   // Check if we already imported this Bvin
   if(!checkBvinExists($row->bvin, 'bv_x_magento_products', $mag_dbh)){
     $category_bvins   = getBVCategoryFromProductBvin($row->bvin, $dbh);
@@ -51,7 +53,7 @@ if($row = $select_category->fetchObject()){
     $longDesc               = ($row->LongDescription == "" ? iconv ( "windows-1252" , "UTF-8" , $row->ShortDescription ) : iconv ( "windows-1252" , "UTF-8" , $row->LongDescription ));
     //If we don't have a short description, use a truncated long description. That looks messy.
     $shortDesc              = ($row->ShortDescription == "" ? (strlen($longDesc) > 125 ? substr($longDesc, 0, 125) . "... " : substr($longDesc, 0, 125)) : iconv ( "windows-1252" , "UTF-8" , $row->ShortDescription ));
-    $additional_attributes['single_data']  = getAdditionalAttributes($row->bvin, $dbh);
+    $additional_attributes['single_data']  = getAdditionalAttributes($row->bvin, $dbh, $mag_dbh);
 
     $dataArray = array(
       'categories' => $category_ids,
@@ -73,7 +75,7 @@ if($row = $select_category->fetchObject()){
     );
     
     include( 'api_functions.php' );
-
+    
     try{
       $id = $client->catalogProductCreate($session, 'simple', $attribute_set_id, $row->SKU, $dataArray, STORE_CODE );
     } catch (SoapFault $e) {
@@ -86,7 +88,7 @@ if($row = $select_category->fetchObject()){
         
         //Add this site to old product
         $result = $client->catalogProductUpdate($session, $row->SKU . ' ', array('websites' => $websites));
-        
+
         //Update this product with new information
         unset($dataArray['websites']); // Only deal with our specific Store, don't update all websites
         $result = $client->catalogProductUpdate($session, $row->SKU . ' ', $dataArray, STORE_CODE);
@@ -105,7 +107,8 @@ if($row = $select_category->fetchObject()){
       echo $e->getMessage();
       exit();
     }
-    if($id) echo "Magento Product ID: " . $id;
+    $timePassed = time() - $startTime;
+    if($id) echo "   Magento Product ID: " . $id . " - (" . $timePassed . " seconds total)";
   } else {
     echo "Record already added";
   }

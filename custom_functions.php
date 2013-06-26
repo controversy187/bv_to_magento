@@ -84,7 +84,8 @@ function formatPropertyName($PropertyName){
  * @param  PDO $dbh  The PDO database connection to the BV data
  * @return Array       An array for the additional_attributes parameter.
  */
-function getAdditionalAttributes($bvin, $dbh){
+function getAdditionalAttributes($bvin, $dbh, $mag_dbh = null){
+	$codesOfValues = array('isbn', 'pages', 'crp');
 	try {
 	  # MySQL with PDO_MYSQL  
 	  $result = $dbh->prepare( "SELECT * FROM `bvc_ProductPropertyValue` WHERE `ProductBvin` = :bvin_id" );
@@ -94,43 +95,78 @@ function getAdditionalAttributes($bvin, $dbh){
 	  echo $e->getMessage();
 	  exit();
 	}
-
+	
 	$additional_attributes = array();
+	$startTimeNow = time();
 	while ($row = $result->fetchObject()) {
 		$propertyValue = getPropertyValue($row->PropertyValue, $dbh);
 		$attributeCode = getMagAttributeCodeFromBvin($row->PropertyBvin, $dbh);
 
-		$attributeValue = getAttributeValueFromPropertyCode($propertyValue, $attributeCode);
+		//echo "<pre>";var_dump($propertyValue, $attributeCode);echo("</pre>");
+
+		if(in_array($attributeCode, $codesOfValues)){
+			$attributeValue = $propertyValue;
+		} else {
+			$attributeValue = getAttributeValueFromPropertyCode($propertyValue, $attributeCode, $mag_dbh);
+		}
 
 		$additional_attributes[] = array(
 			'key' 	=> $attributeCode,
 			'value' => iconv ( "windows-1252" , "UTF-8" , $attributeValue )
 		);
 	}
-
+	
 	return $additional_attributes;
-
 }
 
 /**
  * This takes a label of an attibute option and looks up the value.
  * If it cannot find a match, it returns the original label input as it is assumed to be
  * a non-option attribute (text field, etc) and therefore not lookupable.
+ * It caches the results in the local DB to speed up future duplicate requests
  * @param  String $propertyValue The label of the option
  * @param  String $attributeCode The code of the attribute
  * @return String                The value of the id of the option or the input label
  */
-function getAttributeValueFromPropertyCode($propertyValue, $attributeCode){
-	include( 'api_functions.php' );
+function getAttributeValueFromPropertyCode($propertyValue, $attributeCode, $dbh = null){
+	// First, we try to look up the result from our own DB, as that is significantly faster
+	try {
+	  # MySQL with PDO_MYSQL  
+	  $result = $dbh->prepare( "SELECT value FROM `bv_x_attribute_value_codes` WHERE `label` = :label AND `code` = :code" );
+	  $result->bindParam(':label', $propertyValue);
+	  $result->bindParam(':code', $attributeCode);
+	  $result->execute();
+	} catch(PDOException $e) {   
+	  echo $e->getMessage();
+	  //exit();
+	}
 
+	if ($row = $result->fetchObject()) {
+		return $row->value;
+	}
+
+	// If we didn't find a local result, we start the process for looking up the result via the API
+	$value = $propertyValue;
+
+	include( 'api_functions.php' );
+	
 	$result = $client->catalogProductAttributeOptions($session, $attributeCode, STORE_CODE);
 	foreach($result as $option){
 		if($propertyValue == $option->label){
-			return $option->value;
+			$value = $option->value;
 		}
+
+		// Store all possible results in the local DB for caching later
+		$sql = "INSERT INTO bv_x_attribute_value_codes (`label`, `code`, `value`) VALUES ( '" . $option->label . "', '" . $attributeCode . "', '" . $option->value . "'  );";
+		try{
+	    $dbh->query($sql);
+	  } catch(PDOException $e) {  
+	    echo $e->getMessage();
+	    exit();
+	  }
 	}
 
-	return $propertyValue;
+	return $value;
 	
 }
 

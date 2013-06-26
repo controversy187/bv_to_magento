@@ -20,6 +20,18 @@ try {
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8
     ');
   }
+
+  if(!checkTable('bv_x_attribute_value_codes', $mag_dbh)){
+    $result = $mag_dbh->query('
+      CREATE TABLE `bv_x_attribute_value_codes` (
+        `id` int(11) NOT NULL AUTO_INCREMENT,
+        `label` varchar(100) DEFAULT NULL,
+        `code` varchar(100) DEFAULT NULL,
+        `value` varchar(100) DEFAULT NULL,
+        PRIMARY KEY (`id`)
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8
+    ');
+  }
 }  
 catch(PDOException $e) {  
   echo $e->getMessage();
