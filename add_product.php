@@ -4,7 +4,6 @@ include( 'custom_functions.php' );
 
 $startTime = time();
 
-echo " start: " . time();
 $bvin = $_POST['bvin'];
 
 // Establish connection to Magento DB
@@ -54,23 +53,24 @@ if($row = $select_category->fetchObject()){
     //If we don't have a short description, use a truncated long description. That looks messy.
     $shortDesc              = ($row->ShortDescription == "" ? (strlen($longDesc) > 125 ? substr($longDesc, 0, 125) . "... " : substr($longDesc, 0, 125)) : iconv ( "windows-1252" , "UTF-8" , $row->ShortDescription ));
     $additional_attributes['single_data']  = getAdditionalAttributes($row->bvin, $dbh, $mag_dbh);
+    $additional_attributes['single_data'][]  = array('key' => 'msrp', 'value' => $row->ListPrice);
 
     $dataArray = array(
-      'categories' => $category_ids,
-      'websites' => array(WEBSITE_ID),
-      'name' => $name,
-      'description' => $longDesc,
-      'short_description' => $shortDesc,
-      'weight' => $row->ShippingWeight,
-      'status' => $status,
-      //'url_key' => 'product-url-key',
-      //'url_path' => 'product-url-path',
-      //'visibility' => '4',
-      'price' => $row->SitePrice,
-      'tax_class_id' => $tax_class ,
-      'meta_title' => $meta_title,
-      'meta_keyword' => iconv ( "windows-1252" , "UTF-8" , $row->MetaKeywords ),
-      'meta_description' => iconv ( "windows-1252" , "UTF-8" , $row->MetaDescription ),
+      'categories'            => $category_ids,
+      'websites'              => array(WEBSITE_ID),
+      'name'                  => $name,
+      'description'           => $longDesc,
+      'short_description'     => $shortDesc,
+      'weight'                => $row->ShippingWeight,
+      'status'                => $status,
+      //'url_key'             => 'product-url-key',
+      //'url_path'            => 'product-url-path',
+      //'visibility'          => '4',
+      'price'                 => $row->SitePrice,
+      'tax_class_id'          => $tax_class ,
+      'meta_title'            => $meta_title,
+      'meta_keyword'          => iconv ( "windows-1252" , "UTF-8" , $row->MetaKeywords ),
+      'meta_description'      => iconv ( "windows-1252" , "UTF-8" , $row->MetaDescription ),
       'additional_attributes' => $additional_attributes
     );
     
@@ -108,7 +108,7 @@ if($row = $select_category->fetchObject()){
       exit();
     }
     $timePassed = time() - $startTime;
-    if($id) echo "   Magento Product ID: " . $id . " - (" . $timePassed . " seconds total)";
+    if($id) echo "   Magento Product '" . $name . "' ID: " . $id . " - (" . $timePassed . " seconds total)";
   } else {
     echo "Record already added";
   }
