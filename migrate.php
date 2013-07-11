@@ -7,6 +7,6 @@
 05. <a href="migrate_attribute_options.php?<?php echo ITERATION; ?>" target="_blank">Import Attribute Options</a> (Admin controlled properties of products)<br>
 06. <a href="assign_attributes_to_sets.php?<?php echo ITERATION; ?>" target="_blank">Assign Attributes to Sets</a> (Admin controlled properties of products)<br>
 07. <a href="migrate_products.php?<?php echo ITERATION; ?>" target="_blank">Create Products</a><br>
-08. <a href="reviews.php?<?php echo ITERATION; ?>" target="_blank">Create Product Reviews</a><br>
-09. <a href="migrate_product_images.php?<?php echo ITERATION; ?>" target="_blank">Import Product Images</a><br>
-10. <a href="migrate_users.php?<?php echo ITERATION; ?>" target="_blank">Create Users</a><br>
+08. <a href="migrate_product_images.php?<?php echo ITERATION; ?>" target="_blank">Import Product Images</a><br>
+09. <a href="migrate_users.php?<?php echo ITERATION; ?>" target="_blank">Create Users</a><br>
+10. <a href="reviews.php?<?php echo ITERATION; ?>" target="_blank">Create Product Reviews</a><br>
