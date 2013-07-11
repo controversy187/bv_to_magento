@@ -43,7 +43,7 @@ if($row = $select_category->fetchObject()){
     $category_ids     = bvCategoriesToMagentoCategoryIds($category_bvins, $mag_dbh);
 
     // Get magento set ID from BV ProductTypeID
-    $name                   = iconv ( "windows-1252" , "UTF-8" , $row->ProductName );
+    $name                   = strip_tags(iconv ( "windows-1252" , "UTF-8" , $row->ProductName ));
     $attribute_set_id       = ($row->ProductTypeId == "" ? DEFAULT_ATTRIBUTE_SET_ID : bvinToMag('bv_x_magento_attribute_sets', $row->ProductTypeId, $mag_dbh));
     $status                 = ($row->Status == "1" ? 1 : 2);        //In magento, 1 = active, 2 = inactive
     $tax_class              = ($row->TaxExempt == "1" ? 0 : 2);  //0 = none, 2 = taxable goods
