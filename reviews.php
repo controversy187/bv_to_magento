@@ -58,7 +58,7 @@ while($row = mysql_fetch_assoc($set)){
 		echo "<pre>";var_dump($sql);echo("</pre>");
 		$mag_dbh->query($sql);
 		if($mag_dbh->errorCode() != '00000'){
-			echo '<p><b>', $mag_dbh->errorInfo(), "</b><br />\nThe user ID was: ", (is_null($user_id))?'NULL':intval($user_id), '</p>'; 
+			echo '<p><b>', $mag_dbh->errorInfo(), "</b><br />\nThe user ID was: ", (is_null($user_id))?'NULL':intval($user_id), ' from ', $row['Email'], '</p>'; 
 		}
 		
 		$sql = sprintf("INSERT INTO `%s` (`review_id`, `store_id`) VALUES (%d, 0), (%d, %d)",
