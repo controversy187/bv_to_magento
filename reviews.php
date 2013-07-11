@@ -1,6 +1,6 @@
 <?php
 require 'config.php';
-
+require( 'custom_functions.php' );
 
 $bv = mysql_connect(SRC_DB_HOST, SRC_DB_USER, SRC_DB_PW);
 if(!$bv) {
@@ -20,7 +20,7 @@ catch(PDOException $e) {
   exit();
 }
 
-$sql = 'SELECT u.Email, r.Description, r.ReviewDate, r.UserID, r.ProductBvin FROM `bvc_productreview` as r LEFT JOIN `bvc_user` as u ON u.bvin=r.UserID WHERE r.Approved=1 LIMIT 20;';
+$sql = 'SELECT u.Email, r.Description, r.ReviewDate, r.UserID, r.ProductBvin FROM `bvc_ProductReview` as r LEFT JOIN `bvc_User` as u ON u.bvin=r.UserID WHERE r.Approved=1;';
 $set = mysql_unbuffered_query($sql);
 
 if(!$set || mysql_errno()){
@@ -30,22 +30,22 @@ if(!$set || mysql_errno()){
 	exit;
 }
 
-for($i=0; $i<5; $i++){
-	$row = mysql_fetch_assoc($set);
+while($row = mysql_fetch_assoc($set)){
 	
 	if($row['UserID'] == '0' || empty($row['Email'])){
 		$user_id = NULL;
 	} else {
-		$user_id = 2;//bvinToMag('bv_x_magento_users', $row['Email'], $mag_dbh);
+		$user_id = bvinToMag('bv_x_magento_users', $row['Email'], $mag_dbh);
 	}
 	
-	$product_id = 15; //bvinToMag('bv_x_magento_products', $row['ProductBvin'], $mag_dbh);
+	$product_id = bvinToMag('bv_x_magento_products', $row['ProductBvin'], $mag_dbh);
 	
-	$store_id = 3; //????
+	$store_id = STORE_ID; //????
 	
 	$sql = sprintf("INSERT INTO `review` (`review_id`, `created_at`, `entity_id`, `entity_pk_value`, `status_id`) VALUES(NULL, '%s', 1, %d, 1)", 
 			mysql_real_escape_string($row['ReviewDate']), $product_id);
 	try{
+		echo "<pre>";var_dump($sql);echo("</pre>");
 		$mag_dbh->query($sql);
 		$review_id = $mag_dbh->lastInsertId();
 		
@@ -56,6 +56,7 @@ for($i=0; $i<5; $i++){
 				mysql_real_escape_string($row['Description']),
 				(is_null($user_id))?'NULL':intval($user_id)
 			);
+		echo "<pre>";var_dump($sql);echo("</pre>");
 		$mag_dbh->query($sql);
 	} catch(PDOException $e) {
 		echo $e->getMessage();
