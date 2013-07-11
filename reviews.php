@@ -40,7 +40,6 @@ while($row = mysql_fetch_assoc($set)){
 	
 	$product_id = bvinToMag('bv_x_magento_products', $row['ProductBvin'], $mag_dbh);
 	
-	$store_id = STORE_ID; //????
 	
 	$sql = sprintf("INSERT INTO `review` (`review_id`, `created_at`, `entity_id`, `entity_pk_value`, `status_id`) VALUES(NULL, '%s', 1, %d, 1)", 
 			mysql_real_escape_string($row['ReviewDate']), $product_id);
@@ -51,13 +50,19 @@ while($row = mysql_fetch_assoc($set)){
 		
 		$sql = sprintf("INSERT INTO `review_detail` (`detail_id`,`review_id`,`store_id`,`title`,`detail`,`nickname`,`customer_id`) VALUES(NULL, %d, %d, 'Review', '%s', '', %s)",
 				$review_id,
-				intval($store_id),
+				intval(STORE_ID),
 				
 				mysql_real_escape_string($row['Description']),
 				(is_null($user_id))?'NULL':intval($user_id)
 			);
 		echo "<pre>";var_dump($sql);echo("</pre>");
 		$mag_dbh->query($sql);
+		if($mag_dbh->errorCode() != '00000'){
+			echo '<p><b>', $mag_dbh->errorInfo(), "</b><br />\nThe user ID was: ", (is_null($user_id))?'NULL':intval($user_id), '</p>'; 
+		}
+		
+		$sql = sprintf("INSERT INTO `%s` (`review_id`, `store_id`) VALUES (%d, 0), (%d, %d)",
+			'review_store', $review_id, $review_id, STORE_ID);
 	} catch(PDOException $e) {
 		echo $e->getMessage();
 		echo ", on query: ", $sql, "\r\n";
