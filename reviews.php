@@ -46,6 +46,10 @@ while($row = mysql_fetch_assoc($set)){
 	try{
 		echo "<pre>";var_dump($sql);echo("</pre>");
 		$mag_dbh->query($sql);
+		if($mag_dbh->errorCode() != '00000'){
+			echo '<p><b>', $mag_dbh->errorInfo(), "</b><br />\nThat didn't work! </p>";
+			continue;
+		}
 		$review_id = $mag_dbh->lastInsertId();
 		
 		$sql = sprintf("INSERT INTO `review_detail` (`detail_id`,`review_id`,`store_id`,`title`,`detail`,`nickname`,`customer_id`) VALUES(NULL, %d, %d, 'Review', '%s', '', %s)",
