@@ -67,6 +67,7 @@ while($row = mysql_fetch_assoc($set)){
 		
 		$sql = sprintf("INSERT INTO `%s` (`review_id`, `store_id`) VALUES (%d, 0), (%d, %d)",
 			'review_store', $review_id, $review_id, STORE_ID);
+		$mag_dbh->query($sql);
 	} catch(PDOException $e) {
 		echo $e->getMessage();
 		echo ", on query: ", $sql, "\r\n";
