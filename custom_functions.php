@@ -42,7 +42,7 @@ function getAttributeArray($client, $session){
 function bvinToMag($table, $bvin, $dbh){
 	try {
 	  # MySQL with PDO_MYSQL  
-	  $magento_id = $dbh->prepare( "SELECT * FROM `" . mysql_real_escape_string($table) . "` WHERE `bvin` = :bvin_id" );
+	  $magento_id = $dbh->prepare( "SELECT * FROM `" . $table . "` WHERE `bvin` = :bvin_id" );
 	  $magento_id->bindParam(':bvin_id', $bvin);
 	  $magento_id->execute();
 	} catch(PDOException $e) {   
