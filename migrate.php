@@ -10,3 +10,5 @@
 08. <a href="migrate_product_images.php?<?php echo ITERATION; ?>" target="_blank">Import Product Images</a><br>
 09. <a href="migrate_users.php?<?php echo ITERATION; ?>" target="_blank">Create Users</a><br>
 10. <a href="reviews.php?<?php echo ITERATION; ?>" target="_blank">Create Product Reviews</a><br>
+<br>
+<a href="update_products.php?<?php echo ITERATION; ?>" target="_blank">Update Products</a><br>
