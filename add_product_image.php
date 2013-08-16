@@ -48,6 +48,11 @@ if($row = $select_product->fetchObject()){
     $product_id = bvinToMag('bv_x_magento_products', $row->bvin, $mag_dbh);
     $imageURL = $siteRoot . ($row->ImageFileMedium == '' ? $row->ImageFileSmall : $row->ImageFileMedium);
 
+    //Check if an image already exists
+    include( 'api_functions.php' );
+
+    $count_images = $client->catalogProductAttributeMediaList($session, $row->SKU);
+    //echo "<pre>";var_dump($count_images);die("</pre>");
     //Only add if the image is set in BV
     if($imageURL != $siteRoot){
       //Get the image and Base64 Encode it
@@ -66,25 +71,35 @@ if($row = $select_product->fetchObject()){
         'content' => $base_64_image,
         'mime'    => $mimetype
       );
-
-      include( 'api_functions.php' );
-
-      $result = $client->catalogProductAttributeMediaCreate(
-        $session,
-        $product_id,
-        array(
-          'file'      => $file, 
-          'label'     => iconv ( "windows-1252" , "UTF-8" , $row->ProductName ), 
-          'position'  => '0', 
-          'types'     => array(
-            'image', 
-            'small_image', 
-            'thumbnail'
-          ), 
-          'exclude' => 0
-        ),
-        STORE_CODE
+      $catalogProductAttributeMediaCreateEntity = array(
+        'file'      => $file, 
+        'label'     => iconv ( "windows-1252" , "UTF-8" , $row->ProductName ), 
+        'position'  => '0', 
+        'types'     => array(
+          'image', 
+          'small_image', 
+          'thumbnail'
+        ), 
+        'exclude' => 0
       );
+      if(empty($count_images)){ //If there is no image, create a new one
+        echo " New image... ";
+        $result = $client->catalogProductAttributeMediaCreate(
+          $session,
+          $product_id,
+          $catalogProductAttributeMediaCreateEntity,
+          STORE_CODE
+        );
+      } else { //If an image already exists, update it for this store
+        echo " Reusing old image... ";
+        $result = $client->catalogProductAttributeMediaUpdate(
+          $session,
+          $product_id,
+          $count_images[0]->file,
+          $catalogProductAttributeMediaCreateEntity,
+          STORE_CODE
+        );
+      }
     } else{
       $result = "No image found";
     }
@@ -98,7 +113,6 @@ if($row = $select_product->fetchObject()){
     }
     
     echo "Result: " . $result . " for product: " . iconv ( "windows-1252" , "UTF-8" , $row->ProductName );
-
   } else {
     echo "Record already added";
   }
