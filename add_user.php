@@ -45,8 +45,8 @@ if($row = $select_user->fetchObject()){
       'firstname' => iconv ( "windows-1252" , "UTF-8" , $row->FirstName ), 
       'lastname' => iconv ( "windows-1252" , "UTF-8" , $row->LastName ), 
       'password' => sha1(uniqid(mt_rand(), true) . $row->bvin), 
-      'website_id' => 1, 
-      'store_id' => 1, 
+      'website_id' => WEBSITE_ID, 
+      'store_id' => STORE_ID, 
       'group_id' => 1
     ));
     
