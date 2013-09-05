@@ -1,5 +1,5 @@
 <?php include( 'config.php' ); ?>
-
+<pre>
 01. <a href="migrate_categories.php?<?php echo ITERATION; ?>" target="_blank">Import Categories</a><br>
 02. <a href="migrate_categories_hierarchy.php?<?php echo ITERATION; ?>" target="_blank">Organize Categories Into Hierarchy</a><br>
 03. <a href="migrate_attribute_sets.php?<?php echo ITERATION; ?>" target="_blank">Create Attriubte Sets</a> (Groups for Attributes)<br>
@@ -12,3 +12,5 @@
 10. <a href="reviews.php?<?php echo ITERATION; ?>" target="_blank">Create Product Reviews</a><br>
 <br>
 <a href="update_products.php?<?php echo ITERATION; ?>" target="_blank">Update Products</a><br>
+<a href="migrate_update_prices.php?<?php echo ITERATION; ?>" target="_blank">Update Product Prices (CSV)</a><br>
+</pre>
