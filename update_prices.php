@@ -4,7 +4,7 @@ include( 'custom_functions.php' );
 $startTime = time();
 
 $sku = $_POST['sku'];
-
+echo "<pre>";var_dump($_POST);die("</pre>");
 include( 'api_functions.php' );
     
 try{
