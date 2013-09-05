@@ -85,6 +85,8 @@ if($row = $select_category->fetchObject()){
         $id = $result->product_id;
         $websites = $result->websites;
         $websites[] = WEBSITE_ID;
+        $dataArray['categories'] = array_merge($category_ids, $result->categories);
+        //echo "<pre>";var_dump($category_ids, $result->categories, $dataArray);die("</pre>");
         
         //Add this site to old product
         $result = $client->catalogProductUpdate($session, $row->SKU . ' ', array('websites' => $websites));
@@ -98,7 +100,7 @@ if($row = $select_category->fetchObject()){
       }
     } 
 
-    
+
 
     $sql = "INSERT INTO bv_x_magento_products (`bvin`, `mag_id`) VALUES ( '" . $row->bvin . "', " . $id ." );";
     try{
