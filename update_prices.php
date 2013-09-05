@@ -20,8 +20,11 @@ try{
 
 $name = $result->name;
 
+$additional_attributes['single_data'][]  = array('key' => 'msrp', 'value' => $price);
+
 $dataArray = array(
-  'price'   => $price
+  'price'   							=> $price,
+  'additional_attributes' => $additional_attributes
 );
 
 //Update the products
