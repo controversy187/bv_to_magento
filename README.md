@@ -7,3 +7,6 @@ MySQL requests are made using PHP PDO (so you can probably use the MSSQL databas
 
 ##Usage
 Copy the config.php.sample to config.php and update the information for BV database connections and your Magento SOAP API. Run migrate.php through a webserver and follow the items in order.
+
+##Thanks
+I am using Jim Myhrberg's CSV parsing class, located at https://code.google.com/p/parsecsv-for-php/?
