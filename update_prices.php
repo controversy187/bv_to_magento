@@ -12,7 +12,8 @@ try{
   $result = $client->catalogProductInfo($session, $sku . ' ', STORE_CODE);
 } catch (SoapFault $e) {
  	if($e->faultstring == "Product not exists.") {
-		die("ERROR: Couldn't locate SKU " . $sku);
+    $timePassed = time() - $startTime;
+		die("ERROR: Couldn't locate SKU " . $sku . " - (" . $timePassed . " seconds total)");
 	} else {
   	echo "<pre>";var_dump($e);die("</pre>");
   }
@@ -29,12 +30,12 @@ $dataArray = array(
 
 //Update the products
 try{
-  $result = $client->catalogProductUpdate($session, $sku . ' ', $dataArray, STORE_CODE);  
-} catch (SoapFault $e){
+  $result = $client->catalogProductUpdate($session, $sku . ' ', $dataArray, STORE_CODE); 
+  } catch (SoapFault $e){
 	if($e->faultstring == "Product not exists.") {
-		die("ERROR: Couldn't locate SKU " . $sku);
+		die("ERROR: Couldn't locate SKU " . $sku . " - (" . $timePassed . " seconds total)");
 	} else {
-  	echo "<pre>";var_dump($e);die("</pre>");
+  	echo "<pre>";var_dump($e, $client);die("</pre>");
   }
 }
 
