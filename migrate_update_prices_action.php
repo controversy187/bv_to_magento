@@ -38,7 +38,7 @@ $(document).ready(function(){
   totalSkus = skus.length;
   $('#responseBlock1').append('Updating ' + totalSkus + ' SKUs<br>');
 
-  totalSkus = 10; // Delete this when going live. Only limit to 10 skus for development
+  //totalSkus = 10; // Delete this when going live. Only limit to 10 skus for development
   updatePrice(skus[0], prices[0], 0, totalSkus);
 });
 
