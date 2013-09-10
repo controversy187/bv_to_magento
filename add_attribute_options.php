@@ -16,7 +16,6 @@ catch(PDOException $e) {
   exit();
 }
 
-
 // Get BV Data
 try {
   # MySQL with PDO_MYSQL  
@@ -39,22 +38,6 @@ if($row = $select_property->fetchObject()){
     // Catch (some) illegal characters for the Property Name
     $OptionName = iconv ( "windows-1252" , "UTF-8" , $row->ChoiceName );
    
-    /*
-    if($row->OptionName == ""){
-      $OptionName = $row->bvin;
-    }
-    $OptionName = str_replace(' ', '_', $OptionName);
-    $OptionName = str_replace('(', '_', $OptionName);
-    $OptionName = str_replace(')', '_', $OptionName);
-    $OptionName = str_replace(':', '_', $OptionName);
-    $OptionName = str_replace('-', '_', $OptionName);
-    if (!preg_match('/^[a-z]/i', $OptionName)) { // Make sure it starts with a letter.
-      $OptionName = 'a' . $OptionName;
-    }
-    $OptionName = strtolower($OptionName);
-    $OptionName = substr ( $OptionName, 0, 29 ); // Make sure it is under 30 characters in length
-    */
-   
     $attributeID = bvinToMag('bv_x_magento_attributes', $row->PropertyBvin, $mag_dbh);
 
     $label = array(
@@ -70,16 +53,30 @@ if($row = $select_property->fetchObject()){
     );
 
     include( 'api_functions.php' );
+    $optionExists = false;
 
-    try{
-      $id = $client->catalogProductAttributeAddOption($session, $attributeID, $data);
-    } catch (SoapFault $e) {
-      if($e->faultcode = "HTTP") $id = $client->catalogProductAttributeAddOption($session, $attributeID, $data); // Try one more time if you get an http error
-      echo "<pre>";var_dump($e->faultcode, $e->faultstring);echo("</pre>");
-      echo "<pre>";var_dump("attribute id", $attributeID);echo("</pre>");
-      echo "<pre>";var_dump("data", $data);die("</pre>");
+    $result = $client->catalogProductAttributeOptions($session, $attributeID);
+    foreach($result as $attribute){
+      if($attribute->label == $OptionName){
+        echo $OptionName . " already exists. ";
+        $optionExists = true;
+        break;
+      }
     }
-    echo 'Added option ' . $OptionName . ' to attribute ' . $attributeID;
+    
+    if ($optionExists == false) {
+      try{
+        $id = $client->catalogProductAttributeAddOption($session, $attributeID, $data);
+      } catch (SoapFault $e) {
+        if($e->faultcode = "HTTP") $id = $client->catalogProductAttributeAddOption($session, $attributeID, $data); // Try one more time if you get an http error
+        echo "<pre>";var_dump($e->faultcode, $e->faultstring);echo("</pre>");
+        echo "<pre>";var_dump("attribute id", $attributeID);echo("</pre>");
+        echo "<pre>";var_dump("data", $data);die("</pre>");
+      }
+      echo 'Added option ' . $OptionName . ' to attribute ' . $attributeID;
+    } else{
+      echo "Not added to avoid duplication.";
+    }
   } else {
     echo "Record already added";
   }

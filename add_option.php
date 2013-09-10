@@ -4,7 +4,7 @@ include( 'custom_functions.php' );
 
 $product_bvin = $_POST['product_bvin_id'];
 $choice_bvin  = $_POST['choice_bvin_id'];
-
+echo "<pre>";var_dump($product_bvin);die("</pre>");
 // Establish connection to Magento DB
 // Get Magento ID for the BV Product
 try {
