@@ -30,6 +30,8 @@ try{
   if($e->faultcode == "109"){  // Attribute already exists in set
     echo "Attribute already exists in set.";
     exit();
+  } else {
+    echo "<pre>";var_dump($e);die("</pre>");
   }
 } 
 
