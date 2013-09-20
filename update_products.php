@@ -47,7 +47,8 @@ function updateProduct(productSKU, iteration, max){
 }
 </script>
 <body>
+<pre>
 <div id="responseBlock1"></div>
-
+</pre>
 </body>
 </html>

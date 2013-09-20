@@ -11,6 +11,6 @@
 09. <a href="migrate_users.php?<?php echo ITERATION; ?>" target="_blank">Create Users</a><br>
 10. <a href="reviews.php?<?php echo ITERATION; ?>" target="_blank">Create Product Reviews</a><br>
 <br>
-<a href="update_products.php?<?php echo ITERATION; ?>" target="_blank">Update Products</a><br>
+<a href="update_products.php?<?php echo ITERATION; ?>" target="_blank">Update Products, set url_key and url_path as lowercase SKU</a><br>
 <a href="migrate_update_prices.php?<?php echo ITERATION; ?>" target="_blank">Update Product Prices (CSV)</a><br>
 </pre>

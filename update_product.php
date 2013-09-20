@@ -13,6 +13,7 @@ try{
   echo "<pre>";var_dump($e);die("</pre>");
 }
 
+$old_key = $result->url_key;
 $name = $result->name;
 
 $dataArray = array(
@@ -28,7 +29,7 @@ try{
 }
 
 $timePassed = time() - $startTime;
-echo $result . "   Magento Product '" . $sku . "' - " . $name . " - (" . $timePassed . " seconds total)";
+echo $result . "   Magento Product '" . $sku . "' - " . $name . " - URL Key: " . $old_key . " -> " . $dataArray['url_key'] . " - (" . $timePassed . " seconds total)";
 
 
 $mag_dbh = null;
