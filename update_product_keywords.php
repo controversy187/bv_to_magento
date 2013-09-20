@@ -41,7 +41,7 @@ $dataArray = array(
 
 //Update the products
 try{
-  //$result = $client->catalogProductUpdate($session, $sku . ' ', $dataArray, STORE_CODE);  
+  $result = $client->catalogProductUpdate($session, $sku . ' ', $dataArray, STORE_CODE);  
 } catch (SoapFault $e){
   echo "<pre>";var_dump($e);die("</pre>");
 }
