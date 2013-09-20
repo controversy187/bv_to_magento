@@ -13,24 +13,29 @@ try{
   echo "<pre>";var_dump($e);die("</pre>");
 }
 
-$old_key = $result->url_key;
-$name = $result->name;
+$old_key 	= $result->url_key;
+$old_path = $result->url_path;
+$name 		= $result->name;
 
 $dataArray = array(
   'url_key'   => strtolower($sku . ' '),
   'url_path'  => strtolower($sku . '.html')
 );
 
-//Update the products
-try{
-  $result = $client->catalogProductUpdate($session, $sku . ' ', $dataArray, STORE_CODE);  
-} catch (SoapFault $e){
-  echo "<pre>";var_dump($e);die("</pre>");
+if($old_key == strtolower($sku) && $old_path == strtolower($sku . '.html') ) {
+	$timePassed = time() - $startTime;
+	echo "Magento Product '" . $sku . "' - " . $name . " - No update required - (" . $timePassed . " seconds total)";
+} else {
+	//Update the products
+	try{
+	  $result = $client->catalogProductUpdate($session, $sku . ' ', $dataArray, STORE_CODE);  
+	} catch (SoapFault $e){
+	  echo "<pre>";var_dump($e);die("</pre>");
+	}
+
+	$timePassed = time() - $startTime;
+	echo $result . " Magento Product '" . $sku . "' - " . $name . " - URL Key: " . $old_key . " -> " . $dataArray['url_key'] . " - (" . $timePassed . " seconds total)";
 }
-
-$timePassed = time() - $startTime;
-echo $result . "   Magento Product '" . $sku . "' - " . $name . " - URL Key: " . $old_key . " -> " . $dataArray['url_key'] . " - (" . $timePassed . " seconds total)";
-
 
 $mag_dbh = null;
 $dbh = null;
