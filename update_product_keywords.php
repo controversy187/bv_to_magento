@@ -34,14 +34,14 @@ try{
 }
 
 if( isset($result->meta_keyword)){
-	if(strpos($result->meta_keyword, iconv ( "windows-1252" , "UTF-8" , $bv_data->Keywords ))){
-		//This data has already been incorporated
-		$duplicate = true;
-		$keywords = $result->meta_keyword;
-	} else {
+	if(false === strpos($result->meta_keyword, iconv ( "windows-1252" , "UTF-8" , $bv_data->Keywords ))){
 		//This data needs to be saved; there is new content
 		$duplicate = false;
 		$keywords = $result->meta_keyword . ', ' . iconv ( "windows-1252" , "UTF-8" , $bv_data->Keywords );
+	} else {
+		//This data has already been incorporated
+		$duplicate = true;
+		$keywords = $result->meta_keyword;
 	}
 } else {
 	$keywords = iconv ( "windows-1252" , "UTF-8" , $bv_data->Keywords );
@@ -57,7 +57,7 @@ $dataArray = array(
 //Update the products
 if($duplicate){
 	$timePassed = time() - $startTime;
-	echo " No Data Update need for SKU '" . $sku . "' - Keywords: " . $keywords , " - (" . $timePassed . " seconds total)";
+	echo "No Data Update needed for SKU '" . $sku . "' - Magento Keywords: " . $keywords , " - BV: " . $result->meta_keyword, iconv ( "windows-1252" , "UTF-8" , $bv_data->Keywords ) . " - (" . $timePassed . " seconds total)";
 } else {
 	try{
 		$result = $client->catalogProductUpdate($session, $sku . ' ', $dataArray, STORE_CODE);  
@@ -66,7 +66,7 @@ if($duplicate){
 	}
 	
 	$timePassed = time() - $startTime;
-	echo " Magento Product '" . $sku . "' - New Keywords: " . $keywords , " - (" . $timePassed . " seconds total)";
+	echo "Magento Product '" . $sku . "' - New Keywords: " . $keywords , " - (" . $timePassed . " seconds total)";
 }
 
 
