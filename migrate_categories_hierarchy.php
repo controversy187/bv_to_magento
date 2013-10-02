@@ -101,6 +101,9 @@ function moveCategory(bvin_id, mag_id, iteration, max){
     }
   }).fail(function(){
     $('#responseBlock1').append('Error on bvin: ' + bvin_id + ' mag_id: ' + mag_id);
+    if(iteration+1 < max){
+      moveCategory(bvins[iteration+1], mag_ids[iteration+1], iteration+1, max);
+    }
   });
 }
 </script>
