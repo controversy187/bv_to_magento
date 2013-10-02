@@ -55,7 +55,7 @@ $dataArray = array(
 //echo "<pre>";var_dump($dataArray);die("</pre>");
 
 //Update the products
-if($duplicate){
+if(isset($duplicate) && $duplicate == true){
 	$timePassed = time() - $startTime;
 	echo "No Data Update needed for SKU '" . $sku . "' - Magento Keywords: " . $keywords , " - BV: " . $result->meta_keyword, iconv ( "windows-1252" , "UTF-8" , $bv_data->Keywords ) . " - (" . $timePassed . " seconds total)";
 } else {
