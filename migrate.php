@@ -13,5 +13,6 @@
 <br>
 <a href="update_products.php?<?php echo ITERATION; ?>" target="_blank">Update Products - set url_key and url_path as lowercase SKU</a><br>
 <a href="update_products_keywords.php?<?php echo ITERATION; ?>" target="_blank">Update Products - Add BV Keywords to current Magento keywords</a><br>
+<a href="update_products_remote_attributes.php?<?php echo ITERATION; ?>" target="_blank">Update Products - Set Attributes ISBN-10, UPC, Trim Size, Carton QTY to NULL</a><br>
 <a href="migrate_update_prices.php?<?php echo ITERATION; ?>" target="_blank">Update Product Prices (CSV)</a><br>
 </pre>
