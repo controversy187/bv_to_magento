@@ -16,4 +16,5 @@
 <a href="update_products_remote_attributes.php?<?php echo ITERATION; ?>" target="_blank">Update Products - Set Attributes ISBN-10, UPC, Trim Size, Carton QTY to NULL</a><br>
 <a href="migrate_update_prices.php?<?php echo ITERATION; ?>" target="_blank">Update Product Prices (CSV)</a><br>
 <a href="add_trade_products.php?<?php echo ITERATION; ?>" target="_blank">Add Trade Products</a><br>
+<a href="add_product_ratings.php?<?php echo ITERATION; ?>" target="_blank">Add Ratings to Reviews</a><br>
 </pre>
