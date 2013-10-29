@@ -104,7 +104,7 @@ while($row = $reviews->fetchObject()){
     $found++;
   } else {
     $notFound++;
-    echo "<pre>";var_dump($notFound . " " . $databaseConn . " " . $row->sku . " " . $description);echo("</pre>");
+    echo "<pre>";var_dump($notFound . " Not Found: " . $databaseConn . " " . $row->sku . " " . $description);echo("</pre>");
   }
 }
 
